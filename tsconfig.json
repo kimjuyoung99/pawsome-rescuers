@@ -1,28 +1,17 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "lib": ["ESNext", "DOM", "DOM.Iterable"],
-    "types": ["vite/client", "vite-plugin-svgr/client"],
-    "module": "ESNext",
-    "skipLibCheck": true,
-    "useDefineForClassFields": true,
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"]
-    },
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx",
-    "strict": true,
-    "moduleResolution": "node",
-    "allowImportingTsExtensions": true,
-    "allowSyntheticDefaultImports": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
-  },
-  "include": ["src", "src/custom.d.ts"]
+    "jsx": "react-jsx",            // 리액트 방식의 jsx파일 번역법 사용하겠다.
+    "jsxImportSource": "react",    // jsx파일 번역을 할때 어떤 패키지를 이용할 것인가 → 리액트
+    "module": "ESNext",            // 최신 기술까지 리액트에서 번역을 할거야.(ESNext)
+    "target": "ESNext",            // 생성되는 파일의 버전(하위 호환성)
+    "moduleResolution": "Node",    // NodeJs 문법 버전
+    "esModuleInterop": true,       // commonjs 모듈 호환성
+    "resolveJsonModule": true,     // json import 직접 가능
+    "strict": true,                // 엄격모드 → 오타같은걸 무시하지 않게 한다.(true)
+    "forceConsistentCasingInFileNames": true, // 운영체제별 파일명 구분 제어 → 대소문자를 구분하지 않겠다.
+    "skipLibCheck": true,          // .d.ts 오류 검출에만 필요한대 | 번역을 할때도 .d.ts를 번역하기위해 import | .d.ts 번역할땐 검사 제외
+
+    // 작성 → 오류 검사(strict) → 빌드 → 검파일 검사(skipLibCheck) → 완성
+  }
 }
-//참고한 블로그
-//https://velog.io/@sik02/React-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EC%B4%88%EA%B8%B0-%EC%84%B8%ED%8C%85%ED%95%98%EA%B8%B0-React-TypeScript-Vite-ESLint-Prettier
+// https://creative103.tistory.com/214?pidx=1
