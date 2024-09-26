@@ -1,14 +1,21 @@
 import React from "react";
 import Header from "./components/Header";
 import MainPage from "./components/MainPage";
+import styled from "styled-components";
 
 const App: React.FC = () => {
   return (
-    <div className="App">
+    <AppContainter >
       <Header />
       <MainPage />
-    </div>
+    </AppContainter>
   );
 };
 
 export default App;
+//npm i styled-components
+
+const AppContainter = styled.div`
+    background-color: skyblue;
+    min-height: 100vh;
+`

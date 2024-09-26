@@ -10,7 +10,12 @@
     "strict": true,                // 엄격모드 → 오타같은걸 무시하지 않게 한다.(true)
     "forceConsistentCasingInFileNames": true, // 운영체제별 파일명 구분 제어 → 대소문자를 구분하지 않겠다.
     "skipLibCheck": true,          // .d.ts 오류 검출에만 필요한대 | 번역을 할때도 .d.ts를 번역하기위해 import | .d.ts 번역할땐 검사 제외
-
+    "plugins": [
+      {
+        "name": "typescript-styled-plugin",
+        "tags": ["styled", "css", "sty"]
+      }
+    ]
     // 작성 → 오류 검사(strict) → 빌드 → 검파일 검사(skipLibCheck) → 완성
   }
 }
