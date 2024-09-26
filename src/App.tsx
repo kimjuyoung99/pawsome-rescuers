@@ -1,6 +1,6 @@
 import React from "react";
-import Header from "./components/Header";
-import MainPage from "./components/MainPage";
+import Header from "./components/common/Header";
+import MainPage from "./components/common/MainPage";
 import styled from "styled-components";
 
 const App: React.FC = () => {
