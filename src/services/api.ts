@@ -1,7 +1,7 @@
 //공공 api 가져오는 파일
 import axios from "axios";
 
-const API_KEY = '1d4ba10e6ecc4b029f128a91cea7f088';
+const API_KEY = import.meta.env.VITE_REACT_APP_SECRET_KEY || process.env.REACT_APP_SECRET_KEY;
 const BASE_URL = 'https://openapi.gg.go.kr/AbdmAnimalProtect';
 
 export interface AnimalData {
@@ -41,14 +41,32 @@ export interface AnimalData {
     REFINE_WGS84_LOGT: string;
     }
 
-export const fetchAnimalData = async (pIndex: number = 1, pSize: number = 10): Promise<AnimalData[]> => {
-    const response = await axios.get(BASE_URL, {
-        params: {
-            Key: API_KEY,
-            Type: 'json',
-            pIndex,
-            pSize,
+    export const fetchAnimalData = async (pIndex: number = 1, pSize: number = 10): Promise<AnimalData[]> => {
+        console.log('API_KEY:', API_KEY);
+        try {
+            if (!API_KEY) {
+                throw new Error('API key is not defined. Please check your environment variables.');
+            }
+    
+            const response = await axios.get(BASE_URL, {
+                params: {
+                    Key: API_KEY,
+                    Type: 'json',
+                    pIndex,
+                    pSize,
+                }
+            });
+    
+            if (response.data && response.data.AbdmAnimalProtect && response.data.AbdmAnimalProtect[1]) {
+                return response.data.AbdmAnimalProtect[1].row;
+            } else {
+                console.error('Unexpected API response structure:', response.data);
+                return [];
+            }
+        } catch (error) {
+            console.error('Error fetching animal data:', error);
+            throw error;
         }
-    });
-    return response.data.AbdmAnimalProtect[1].row;
-}
+    }
+    
+    

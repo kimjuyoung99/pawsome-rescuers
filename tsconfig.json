@@ -15,8 +15,14 @@
         "name": "typescript-styled-plugin",
         "tags": ["styled", "css", "sty"]
       }
-    ]
+    ],
+    "typeRoots": ["node_modules/@types", "src"],
+    "baseUrl": "src",
+    "paths": {
+      "@/*": ["./*"]
+    }
     // 작성 → 오류 검사(strict) → 빌드 → 검파일 검사(skipLibCheck) → 완성
-  }
+  },
+  "include": ["src", "src/**/*.ts", "src/**/*.tsx", "src/**/*.d.ts"]
 }
 // https://creative103.tistory.com/214?pidx=1
