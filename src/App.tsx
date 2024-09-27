@@ -22,6 +22,6 @@ export default App;
 //npm i styled-components
 
 const AppContainter = styled.div`
-    background-color: skyblue;
+    background-color: #bce3fc;
     min-height: 100vh;
 `
