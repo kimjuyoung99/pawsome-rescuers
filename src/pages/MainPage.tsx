@@ -7,7 +7,7 @@ import GogAndCat from "../assets/images/MainPage_Dog_and_Cat.svg"
 import Paw from '../assets/images/pow.svg';
 
 const MainPage: React.FC = () => {
-    const {data: animalData, isLoading, isError, error} = useQuery<AnimalData[],Error>({
+    const {data: animalData} = useQuery<AnimalData[],Error>({
         queryKey:['animalData'],
         queryFn: () => fetchAnimalData(),
     });
@@ -18,9 +18,6 @@ const MainPage: React.FC = () => {
             console.log("Animal Data:", animalData);
         }
     },[animalData]);
-
-    // if (isLoading) return <Loading>Loading</Loading>;
-    // if (isError) return <Loading>Error: {error.message}</Loading>
 
         return (
         <PageContainer>
@@ -49,11 +46,6 @@ const MainPage: React.FC = () => {
 
 export default MainPage;
 
-
-
-// const Loading = styled.div`
-//     border-color: #7ECDFF;
-// `
 
 const PageContainer = styled.div`
   width: 1410px;
