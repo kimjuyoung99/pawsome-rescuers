@@ -1,13 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
+import {Link} from 'react-router-dom';
 import Logo from '../../assets/images/SavePawLogo.svg';
 
 const Header: React.FC = () => {
     return (
         <Headerspan>
-            <HeaderLogo><img src={Logo} alt="SavePaw Logo"/></HeaderLogo>
+            <HeaderLogo>
+                <Link to="/"><img src={Logo} alt="SavePaw Logo"/></Link>
+            </HeaderLogo>
             <HeadreBar>
-                <HeadreMenu>유기동물 보기</HeadreMenu>
+                <HeadreMenu>
+                    <Link to="/datalist">유기동물 보기</Link></HeadreMenu>
                 <HeadreMenu>털친소</HeadreMenu>
                 <HeadreMenu>주변 보호소 찾기</HeadreMenu>
                 <HeadreMenu>나의 관심동물</HeadreMenu>

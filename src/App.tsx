@@ -1,11 +1,12 @@
 import React from "react";
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import styled from "styled-components";
-import { formToJSON } from "axios";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 import Header from "./components/common/Header";
 import MainPage from "./pages/MainPage";
 import GlobalStyles from "./GlobalStyles";
+import DataList from "./components/DataList";
 
 const queryClient = new QueryClient();
 
@@ -14,10 +15,15 @@ const App: React.FC = () => {
     <>
     <GlobalStyles/>
     <QueryClientProvider client={queryClient}>
-      <AppContainter >
-        <Header />
-        <MainPage />
-      </AppContainter>
+      <Router>
+        <AppContainter >
+          <Header />
+          <Routes>
+            <Route path="/" element={<MainPage/>} />
+            <Route path="/datalist" element={<DataList/>} />
+          </Routes>
+        </AppContainter>
+      </Router>
     </QueryClientProvider>
     </>
   );
