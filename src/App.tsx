@@ -6,7 +6,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Header from "./components/common/Header";
 import MainPage from "./pages/MainPage";
 import GlobalStyles from "./GlobalStyles";
-import DataList from "./components/DataList";
+import AnimalList from "./pages/AnimalList";
 
 const queryClient = new QueryClient();
 
@@ -20,7 +20,7 @@ const App: React.FC = () => {
           <Header />
           <Routes>
             <Route path="/" element={<MainPage/>} />
-            <Route path="/datalist" element={<DataList/>} />
+            <Route path="/animallist" element={<AnimalList/>} />
           </Routes>
         </AppContainter>
       </Router>
