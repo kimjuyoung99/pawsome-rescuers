@@ -3,7 +3,7 @@ import styled from "styled-components";
 import vector from "../assets/images/Vector.svg";
 
 
-export const Fliter = (): JSX.Element => {
+export const FliterDropDown = (): JSX.Element => {
     return (
       <StyledBox className="box">
         <div className="group">
@@ -19,30 +19,29 @@ export const Fliter = (): JSX.Element => {
       </StyledBox>
     );
   };
-export default Fliter;
+export default FliterDropDown;
 
 const StyledBox = styled.div`
-  height: 96px;
-  width: 110px;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  background-color: white;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 
   .group {
-    height: 96px;
-    left: 0;
-    position: fixed;
-    top: 0;
+    position: relative;
     width: 116px;
   }
 
   .overlap-group {
-    height: 96px;
     position: relative;
     width: 110px;
   }
 
   .rectangle {
     background-color: #ffffff;
-    border: 1px solid;
-    border-color: #bbbbbb;
+    border: 1px solid #bbbbbb;
     border-radius: 20px;
     height: 87px;
     left: 0;
@@ -110,4 +109,6 @@ const StyledBox = styled.div`
     white-space: nowrap;
     width: 79px;
   }
+
+  
 `;

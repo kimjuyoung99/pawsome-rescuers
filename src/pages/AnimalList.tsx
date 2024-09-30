@@ -1,12 +1,22 @@
-import React from "react";
+import React,{useState} from "react";
 import styled from "styled-components";
 import DataBox from "../components/DataBox";
-import Fliter from "../components/Fliter";
+import FliterDropDown from "../components/FliterDropDown";
 
 import ArrowDropDown from "../assets/images/arrow_drop_down.svg";
 
-
 const AnimalList: React.FC = () => {
+    const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+    const handleMouseEnter = (filter:string) => {
+        console.log("Mouse enter:", filter); // 디버깅을 위한 로그
+        setActiveDropdown(filter);
+    };
+
+    const handleMouseLeave = () => {
+        console.log("Mouse leave"); // 디버깅을 위한 로그
+        setActiveDropdown(null);
+    }
+
     return (
         <Container>
             <Text1>공고기한이 하루 남은 친구들이에요!</Text1>
@@ -18,26 +28,23 @@ const AnimalList: React.FC = () => {
                 <DataBox />                
             </BoxContainer>
             <FilterContainer>
-                <FilterBox>
-                    시도군
-                    <img src={ArrowDropDown} alt="dropdown" className="arrow-drop-down" />
-                </FilterBox>
-                <FilterBox>
-                    상태
-                    <img src={ArrowDropDown} alt="dropdown" className="arrow-drop-down" />
-                </FilterBox>
-                <FilterBox>
-                    품종
-                    <img src={ArrowDropDown} alt="dropdown" className="arrow-drop-down" />
-                </FilterBox>
-                <FilterBox>
-                    나이
-                    <img src={ArrowDropDown} alt="dropdown" className="arrow-drop-down" />
-                </FilterBox>
-                <FilterBox>
-                    성별
-                    <img src={ArrowDropDown} alt="dropdown" className="arrow-drop-down" />
-                </FilterBox>
+                {['시도군', '상태', '품종', '나이', '성별'].map((filter) => (
+                    <FilterBoxWrapper
+                        key={filter}
+                        onMouseEnter={() => handleMouseEnter(filter)}
+                        onMouseLeave={handleMouseLeave}
+                    >
+                        <FilterBox>
+                            {filter}
+                            <img src={ArrowDropDown} alt="dropdown" className="arrow-drop-down" />
+                        </FilterBox>
+                        {activeDropdown === filter && (
+                            <div style={{ position: 'relative' }}>
+                                <FliterDropDown />
+                            </div>
+                        )}
+                    </FilterBoxWrapper>
+                ))}
             </FilterContainer>
         </Container>
     )
@@ -45,12 +52,15 @@ const AnimalList: React.FC = () => {
 
 export default AnimalList;
 
+const FilterBoxWrapper = styled.div`
+    position: relative;
+`;
+
 const FilterContainer = styled.div`
     display: flex;
     gap: 10px;
     margin-bottom: 20px;
     padding: 30px 0 30px 30px;
-
     border: 3px solid blue;
 `;
 
@@ -68,10 +78,7 @@ const FilterBox = styled.div`
     color: #333;
     cursor: pointer;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-
-    // 새로 추가된 스타일
-    // 수정된 스타일
-    border-radius: 16px;  // 높이의 절반 값
+    border-radius: 16px;
     border: 2px solid #BBBBBB;
     font-weight: 600;
 
