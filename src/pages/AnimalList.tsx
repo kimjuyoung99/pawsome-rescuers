@@ -1,21 +1,33 @@
-import React,{useState} from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import DataBox from "../components/DataBox";
 import FliterDropDown from "../components/FliterDropDown";
-
 import ArrowDropDown from "../assets/images/arrow_drop_down.svg";
+
+type FilterOptionsType = {
+  [key: string]: string[];
+};
+
+// filterOptions 객체를 사용하여 각 필터의 옵션을 정의
+const filterOptions: FilterOptionsType = {
+  '시도군': ['수원시', '성남시', '용인시', '부천시', '화성시', '평택시', '고양시', '남양주시', '오산시', '의정부시', '안양시', '광명시', '군포시', '이천시', '시흥시', '양주시', '하남시', '포천시', '여주시', '안산시', '김포시', '의왕시', '구리시', '동두천시'],
+  '상태': ['전체', '보호중', '종료'],
+  '나이': ['1살 미만', '1살~5살', '6살~9살', '10살 이상'],
+  '성별': ['남아', '여아'],
+  '중성화': ['완료', '미완료', '알수없음'],
+  '품종': ['강아지', '고양이', '그외']
+};
 
 const AnimalList: React.FC = () => {
     const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
-    const handleMouseEnter = (filter:string) => {
-        console.log("Mouse enter:", filter); // 디버깅을 위한 로그
+
+    const handleMouseEnter = (filter: string) => {
         setActiveDropdown(filter);
     };
 
     const handleMouseLeave = () => {
-        console.log("Mouse leave"); // 디버깅을 위한 로그
         setActiveDropdown(null);
-    }
+    };
 
     return (
         <Container>
@@ -28,7 +40,8 @@ const AnimalList: React.FC = () => {
                 <DataBox />                
             </BoxContainer>
             <FilterContainer>
-                {['시도군', '상태', '품종', '나이', '성별'].map((filter) => (
+            {/* AnimalList 컴포넌트에서 Object.keys(filterOptions)를 사용하여 필터 목록을 동적으로 생성 */}
+                {Object.keys(filterOptions).map((filter) => (
                     <FilterBoxWrapper
                         key={filter}
                         onMouseEnter={() => handleMouseEnter(filter)}
@@ -39,18 +52,18 @@ const AnimalList: React.FC = () => {
                             <img src={ArrowDropDown} alt="dropdown" className="arrow-drop-down" />
                         </FilterBox>
                         {activeDropdown === filter && (
-                            <div style={{ position: 'relative' }}>
-                                <FliterDropDown />
-                            </div>
+                            <FliterDropDown options={filterOptions[filter]} />
                         )}
                     </FilterBoxWrapper>
                 ))}
             </FilterContainer>
         </Container>
-    )
+    );
 };
 
 export default AnimalList;
+
+// ... (나머지 스타일 컴포넌트는 이전과 동일)
 
 const FilterBoxWrapper = styled.div`
     position: relative;
