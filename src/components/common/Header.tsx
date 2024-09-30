@@ -10,11 +10,10 @@ const Header: React.FC = () => {
                 <Link to="/"><img src={Logo} alt="SavePaw Logo"/></Link>
             </HeaderLogo>
             <HeadreBar>
-                <HeadreMenu>
-                    <Link to="/animallist">유기동물 보기</Link></HeadreMenu>
+                <HeadreMenu><Link to="/animallist">유기동물 보기</Link></HeadreMenu>
                 <HeadreMenu>털친소</HeadreMenu>
                 <HeadreMenu>주변 보호소 찾기</HeadreMenu>
-                <HeadreMenu>나의 관심동물</HeadreMenu>
+                <HeadreMenu><Link to="/scrap">나의 관심동물</Link></HeadreMenu>
             </HeadreBar>
         </Headerspan>
     )
