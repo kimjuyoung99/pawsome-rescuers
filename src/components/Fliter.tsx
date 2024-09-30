@@ -2,6 +2,25 @@ import React from "react";
 import styled from "styled-components";
 import vector from "../assets/images/Vector.svg";
 
+
+export const Fliter = (): JSX.Element => {
+    return (
+      <StyledBox className="box">
+        <div className="group">
+          <div className="overlap-group">
+            <div className="rectangle" />
+            <img className="vector" alt="Vector" src={vector} />
+            <img className="img" alt="Vector" src={vector} />
+            <div className="text-wrapper">전체</div>
+            <div className="div">보호중</div>
+            <div className="text-wrapper-2">종료</div>
+          </div>
+        </div>
+      </StyledBox>
+    );
+  };
+export default Fliter;
+
 const StyledBox = styled.div`
   height: 96px;
   width: 110px;
@@ -92,20 +111,3 @@ const StyledBox = styled.div`
     width: 79px;
   }
 `;
-
-export const Box = (): JSX.Element => {
-  return (
-    <StyledBox className="box">
-      <div className="group">
-        <div className="overlap-group">
-          <div className="rectangle" />
-          <img className="vector" alt="Vector" src={vector} />
-          <img className="img" alt="Vector" src={vector} />
-          <div className="text-wrapper">전체</div>
-          <div className="div">보호중</div>
-          <div className="text-wrapper-2">종료</div>
-        </div>
-      </div>
-    </StyledBox>
-  );
-};
