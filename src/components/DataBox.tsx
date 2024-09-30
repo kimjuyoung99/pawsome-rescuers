@@ -44,21 +44,15 @@ export const DataBox: React.FC = () => {
 export default DataBox;
 
 const StyledBox = styled.div`
-		border: red solid 1px;
+	/* border: red solid 1px; */
 
 
 	.group {
 		width: 205px;
-		height: 357px;
+		height: 320px;
 		position: relative;
 		border-radius: 20px;
-		border: orange solid 2px;
-		/* 
-    height: 370px;
-    left: 0;
-    position: fixed;
-    top: 0;
-    width: 228px; */
+		/* border: orange solid 2px; */
 	}
 
 	//상단 박스
@@ -122,7 +116,7 @@ const StyledBox = styled.div`
 		height: 189px;
 		left: 6px;
 		position: absolute;
-		top: 181px;
+		top: 175px;
 		width: 171px;
 	}
 
@@ -143,15 +137,16 @@ const StyledBox = styled.div`
 	}
 
 	.frame-wrapper {
-		height: 156px;
+		height: 130px;
 		left: 0;
 		position: absolute;
 		top: 19px;
 		width: 171px;
+        /* padding-bottom: -20px; */
+        /* border : red solid 2px; */
 	}
 
 	.frame {
-		height: 156px;
 		position: relative;
 	}
 

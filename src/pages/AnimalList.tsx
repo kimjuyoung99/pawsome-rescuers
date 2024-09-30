@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { Container,Arrow, Text1, AnimalListContainer, Pagination, PageButton } from '../GlobalStyles';
+
 import styled from "styled-components";
 import DataBox from "../components/DataBox";
 import FliterDropDown from "../components/FliterDropDown";
@@ -130,49 +132,10 @@ const AnimalList: React.FC = () => {
 };
 
 export default AnimalList;
-
-//페이지네이션
-const Arrow = styled.div`
-    width: 30px;
-    height: 30px;
-`;
-
-const Pagination = styled.div`
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-`;
-
-const PageButton = styled.button<{ active: boolean }>`
-    margin: 0 5px;
-    padding: 5px 10px;
-    border: 1px solid #ccc;
-    background-color: ${props => props.active ? '#007bff' : 'white'};
-    color: ${props => props.active ? 'white' : 'black'};
-    cursor: pointer;
-    border-radius: 5px;
-
-    &:hover {
-        background-color: ${props => props.active ? '#0056b3' : '#e9ecef'};
-    }
-`;
-
-//메인 리스트
-const AnimalListContainer = styled.div`
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 20px;
-    justify-content: center;
-    margin: 0 0 20px 20px;
-    border: yellow solid 2px;
-`;
-
-
-//아래 동물 전체 리스트 공간
+//필터
 const FilterBoxWrapper = styled.div`
     position: relative;
 `;
-
 const FilterContainer = styled.div`
     display: flex;
     gap: 10px;
@@ -180,7 +143,6 @@ const FilterContainer = styled.div`
     padding: 30px 0 10px 30px;
     border: 3px solid blue;
 `;
-
 const FilterBox = styled.div`
     width: 76px;
     height: 32px;
@@ -205,6 +167,7 @@ const FilterBox = styled.div`
     }
 `;
 
+//공고 하루 남은 동물 리스트 
 const OnedayRemainContainer = styled.div`
     display: flex;
     flex-wrap: wrap;
@@ -214,22 +177,3 @@ const OnedayRemainContainer = styled.div`
     border: yellow solid 2px;
 `;
 
-const Container = styled.div`
-    padding: 20px;
-    max-width: 1200px;
-    margin: 10px 10px 10px 120px;
-    border: red solid 2px;
-`;
-
-const Text1 = styled.div`
-    width: 100%;
-    max-width: 638px;
-    color: #323232;
-    font-family: "Noto Sans", sans-serif;
-    font-size: 26px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: 150%;
-    letter-spacing: -1.55px;
-    padding-bottom: 20px;
-`;
