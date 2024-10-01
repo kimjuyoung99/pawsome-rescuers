@@ -8,7 +8,7 @@ import Arrow_left from "../assets/images/Arrow_left.svg";
 import Arrow_left_blue from "../assets/images/Arrow_left_blue.svg";
 import Arrow_right from "../assets/images/Arrow_right.svg";
 import Arrow_right_blue from "../assets/images/Arrow_right_blue.svg";
-
+import DogAndCat from "../assets/images/MainPage_Dog_and_Cat.svg";
 // 임시 데이터 생성 (예: 58개의 더미 데이터)
 const mockAnimals = Array(58).fill(null).map((_, index) => ({
   id: index + 1,
@@ -41,40 +41,62 @@ const ScrapPage: React.FC = () => {
     };
 
     return(
-        <Container>
-            <Text1>친구들에게 관심을 가져 주셔서 감사해요!</Text1>
+        <Container2>
+            <DogAndCatScrap><img src={DogAndCat} alt="DogAndCat"></img></DogAndCatScrap>
+            <Text2>다시 보고 싶은 친구들을 추가해주세요!</Text2>
 
-            <ScrapAnimalListContainer>
-                {getCurrentPageItems().map((animal) => (
-                    <DataBox key={animal.id} />
-                ))}
-            </ScrapAnimalListContainer>
-
-            <Pagination>
-                <Arrow onClick={handlePrevPage}>
-                    <img 
-                        src={currentPage === 1 ? Arrow_left : Arrow_left_blue} 
-                        alt="Previous page"
-                    />
-                </Arrow>
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                    <PageButton
-                        key={page}
-                        onClick={() => setCurrentPage(page)}
-                        active={currentPage === page}
-                    >
-                        {page}
-                    </PageButton>
-                ))}
-                <Arrow onClick={handleNextPage}>
-                    <img 
-                        src={currentPage === totalPages ? Arrow_right : Arrow_right_blue} 
-                        alt="Next page"
-                    />
-                </Arrow>
-            </Pagination>
-        </Container>
+        </Container2>
     );
 };
 
 export default ScrapPage;
+
+const Container2 = styled(Container)`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; // 전체 뷰포트 높이를 사용하려는 경우
+  padding-bottom:8%;
+`;
+
+const Text2 = styled(Text1)`
+    padding-left:12%;
+`;
+
+const DogAndCatScrap = styled.div`
+    width: 381.6px;
+    height: 456px;
+`;
+
+{/* <Text1>친구들에게 관심을 가져 주셔서 감사해요!</Text1>
+
+<ScrapAnimalListContainer>
+    {getCurrentPageItems().map((animal) => (
+        <DataBox key={animal.id} />
+    ))}
+</ScrapAnimalListContainer>
+
+<Pagination>
+    <Arrow onClick={handlePrevPage}>
+        <img 
+            src={currentPage === 1 ? Arrow_left : Arrow_left_blue} 
+            alt="Previous page"
+        />
+    </Arrow>
+    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+        <PageButton
+            key={page}
+            onClick={() => setCurrentPage(page)}
+            active={currentPage === page}
+        >
+            {page}
+        </PageButton>
+    ))}
+    <Arrow onClick={handleNextPage}>
+        <img 
+            src={currentPage === totalPages ? Arrow_right : Arrow_right_blue} 
+            alt="Next page"
+        />
+    </Arrow>
+</Pagination> */}
