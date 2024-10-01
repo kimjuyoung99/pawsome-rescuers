@@ -4,6 +4,7 @@ import { Container,Arrow, Text1, AnimalListContainer, Pagination, PageButton } f
 import styled from "styled-components";
 import DataBox from "../components/DataBox";
 import FliterDropDown from "../components/FliterDropDown";
+import {Link} from "react-router-dom";
 
 import ArrowDropDown from "../assets/images/arrow_drop_down.svg";
 import Arrow_left from "../assets/images/Arrow_left.svg";
@@ -100,7 +101,9 @@ const AnimalList: React.FC = () => {
 
             <AnimalListContainer>
                 {currentItems.map((animal) => (
-                    <DataBox key={animal.id} />
+                    <Link to={`/animallist/detail/${animal.id}`} key={animal.id}>
+                        <DataBox />
+                    </Link>               
                 ))}
             </AnimalListContainer>
 
