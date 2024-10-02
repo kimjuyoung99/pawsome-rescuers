@@ -11,7 +11,7 @@ const Header: React.FC = () => {
             </HeaderLogo>
             <HeadreBar>
                 <HeadreMenu><Link to="/animallist">유기동물 보기</Link></HeadreMenu>
-                <HeadreMenu>털친소</HeadreMenu>
+                <HeadreMenu><Link to="/matching">털친소</Link></HeadreMenu>
                 <HeadreMenu>주변 보호소 찾기</HeadreMenu>
                 <HeadreMenu><Link to="/scrap">나의 관심동물</Link></HeadreMenu>
             </HeadreBar>
