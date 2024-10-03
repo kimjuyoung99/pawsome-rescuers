@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import DogAndHuman1 from "../../assets/images/DogAndHuman1.png";
 import DogAndHuman2 from "../../assets/images/DogAndHuman2.png";
 import DogAndHuman3 from "../../assets/images/DogAndHuman3.png";
-import Cat1 from "../../assets/images/Cat1.png";
 import Paw from "../../assets/images/pow.svg";
 
 const AnimalMatching: React.FC = () => {
@@ -66,7 +65,7 @@ const Container1 = styled(Container)`
 `;
 
 const Container2 = styled.div`
-    height: 550px;
+    height: 600px;
     width: 900px;
     max-height: 1000px;
     max-width: 1200px;
@@ -138,6 +137,7 @@ const Button = styled.button`
 	letter-spacing: -1.44px;
     margin-top: 20px;
     transition: all 0.3s ease;
+	margin-bottom: 10px;
 	// 옵션: 포커스 시 나타나는 기본 아웃라인도 제거하고 싶다면 추가
 	&:focus {
 		outline: none;
