@@ -4,10 +4,15 @@ import styled from "styled-components";
 import { Container } from "../../GlobalStyles";
 import ProgressBar from "../../components/ProgressBar";
 import Paw from "../../assets/images/pow.svg";
-import Key from "../../assets/images/matching_images/Key.svg";
-import Carria from "../../assets/images/matching_images/Carria.svg";
-import Car from "../../assets/images/matching_images/Car.svg";
-import House from "../../assets/images/matching_images/House.svg";
+import W from "../../assets/images/matching_images/White.svg";
+import BL from "../../assets/images/matching_images/Black.svg";
+import G from "../../assets/images/matching_images/Gray.svg";
+import Br from "../../assets/images/matching_images/Brown.svg";
+import C from "../../assets/images/matching_images/Cheese.svg";
+import Three from "../../assets/images/matching_images/TreeColor.svg";
+import M from "../../assets/images/matching_images/Mackerel.svg";
+import BW from "../../assets/images/matching_images/BlackWhite.svg";
+
 
 const Matching_4: React.FC = () => {
     const [currentQuestion, setCurrentQuestion] = useState(1);
@@ -15,7 +20,7 @@ const Matching_4: React.FC = () => {
     const navigate = useNavigate();
 
     const handleNextStep = () => {
-        navigate("/matching/test4");
+        navigate("/matching/loading");
     }
 
     return (
@@ -26,26 +31,38 @@ const Matching_4: React.FC = () => {
                 </ProgressBarWrapper>
                 <Explanation>
                 나를 위한 티셔츠를 고르고 있다.<br/>
-어떤 색깔이 좋을까? 3개 이상 골라보자!
+                어떤 색깔이 좋을까? 3개 이상 골라보자!
                 </Explanation>
 
                 <ChoiceContainer>
+                    <A>
+                        <ChoiceBox>
+                            <BoxImg src={W}></BoxImg>
+                            <Text>흰색</Text>
+                        </ChoiceBox>
+                        <ChoiceBox>
+                            <BoxImg src={BL}></BoxImg>
+                            <Text>검은색</Text>
+                        </ChoiceBox>
+                        <ChoiceBox>
+                            <BoxImg src={G}></BoxImg>
+                            <Text>회색</Text>
+                        </ChoiceBox>
+                    </A>
+                    <B>
                     <ChoiceBox>
-                        <BoxImg src={Key}></BoxImg>
-                        <Text>열쇠 크기</Text>
-                    </ChoiceBox>
-                    <ChoiceBox>
-                        <BoxImg src={Carria}></BoxImg>
-                        <Text>캐리어 크기</Text>
-                    </ChoiceBox>
-                    <ChoiceBox>
-                        <BoxImg src={Car}></BoxImg>
-                        <Text>자동차 크기</Text>
-                    </ChoiceBox>
-                    <ChoiceBox>
-                        <BoxImg src={House}></BoxImg>
-                        <Text>집 채</Text>
-                    </ChoiceBox>
+                            <BoxImg src={C}></BoxImg>
+                            <Text>금색</Text>
+                        </ChoiceBox>
+                        <ChoiceBox>
+                            <BoxImg src={Br}></BoxImg>
+                            <Text>갈색</Text>
+                        </ChoiceBox>
+                        <ChoiceBox>
+                        <BoxImg src={BW}></BoxImg>
+                            <Text>흑백</Text>
+                        </ChoiceBox>
+                    </B>
                 </ChoiceContainer>
 				<NextBtn onClick={handleNextStep}>
                     다음
@@ -57,18 +74,33 @@ const Matching_4: React.FC = () => {
         </Container>
     );
 };
-
 export default Matching_4;
+
+const A = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 100%;
+`;
+const B = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 5px; // 첫 번째 줄과의 간격 조정
+`;
 const ChoiceContainer = styled.div`
-display: flex;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
 `;
 const ChoiceBox = styled.div`
-width: 214px;
-height: 215px;
+width: 120px;
+height: 120px;
+/* display: flex; */
 flex-shrink: 0;
 border-radius: 40px;
 border: 4px solid #E5E5E5;
-margin : 30px 15px 30px 15px;
+margin: 10px 10px 5px 10px; // 상하좌우 여백을 동일하게 설정
 background: var(--Schemes-On-Primary, #FFF);
 transition: all 0.3s ease;
 	// 옵션: 포커스 시 나타나는 기본 아웃라인도 제거하고 싶다면 추가
@@ -85,24 +117,24 @@ transition: all 0.3s ease;
     }
 `;
 const BoxImg = styled.img`
-margin:20px 20px 3px 40px;
-width: 134px;
-height: 134px;
-flex-shrink: 0;
+  margin: 7px 0px 0px 25px; // 하단 여백(padding-bottom) 제거
+  width: 65px;
+  height: 65px;
+  flex-shrink: 0;
 `;
+
 const Text = styled.div`
-padding : 0px 10px 10px 10px;
-margin-left:25%;
-width: 99px;
-height: 29px;
-flex-shrink: 0;
-color: #323232;
-text-align: center;
-font-family: Inter;
-font-size: 30px;
-font-style: normal;
-font-weight: 500;
-line-height: normal;
+  padding: 0px 30px 0px 5px; // 상단 패딩을 줄임
+  width: 140px;
+  height: 29px;
+  flex-shrink: 0;
+  color: #323232;
+  text-align: center;
+  font-family: Inter;
+  font-size: 25px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
 `;
 const Explanation = styled.div`
 width: 761px;
@@ -142,6 +174,7 @@ const NextBtn = styled.button`
 	display: inline-flex;
 	height: 45px;
 	padding: 16px 32px;
+    margin-bottom: 10px0;
 	justify-content: center;
 	align-items: center;
 	gap: 10px;
@@ -183,3 +216,43 @@ const PawIcon = styled.span`
 		object-fit: contain;
 	}
 `;
+
+
+{/* <ChoiceContainer>
+<A>
+    <ChoiceBox>
+        <BoxImg src={W}></BoxImg>
+        <Text>흰색</Text>
+    </ChoiceBox>
+    <ChoiceBox>
+        <BoxImg src={BL}></BoxImg>
+        <Text>검은색</Text>
+    </ChoiceBox>
+    <ChoiceBox>
+        <BoxImg src={G}></BoxImg>
+        <Text>회색</Text>
+    </ChoiceBox>
+    <ChoiceBox>
+    <BoxImg src={Three}></BoxImg>
+        <Text>삼색</Text>
+    </ChoiceBox>
+</A>
+<B>
+<ChoiceBox>
+        <BoxImg src={C}></BoxImg>
+        <Text>금색</Text>
+    </ChoiceBox>
+    <ChoiceBox>
+        <BoxImg src={Br}></BoxImg>
+        <Text>갈색</Text>
+    </ChoiceBox>
+    <ChoiceBox>
+    <BoxImg src={BW}></BoxImg>
+        <Text>흑백</Text>
+    </ChoiceBox>
+    <ChoiceBox>
+    <BoxImg src={M}></BoxImg>
+        <Text>고등어</Text>
+    </ChoiceBox>
+</B>
+</ChoiceContainer> */}
