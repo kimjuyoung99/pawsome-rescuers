@@ -71,7 +71,7 @@ const DetailPage: React.FC = () => {
 };
 export default DetailPage;
 
-// 전체 컨테이너 스타일링
+// 전체 컨테이너 스타일링 커스텀
 const Container1 = styled(Container)`
   display: flex;
   flex-direction: column;  // 세로 방향으로 요소 배치

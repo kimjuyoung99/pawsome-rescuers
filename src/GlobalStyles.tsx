@@ -70,14 +70,14 @@ export const Pagination = styled.div`
 export const PageButton = styled.button<{ active: boolean }>`
     margin: 0 5px;
     padding: 5px 10px;
-    border: 1px solid #ccc;
-    background-color: ${props => props.active ? '#007bff' : 'white'};
-    color: ${props => props.active ? 'white' : 'black'};
+    border: 2px solid #ccc;
+    background-color: ${props => props.active ? '#47b1ff' : 'white'};
+    color: ${props => props.active ? 'white' : '#ccc'};
     cursor: pointer;
     border-radius: 5px;
 
     &:hover {
-        background-color: ${props => props.active ? '#0056b3' : '#e9ecef'};
+        background-color: ${props => props.active ? '#47b1ff' :'#47b1ff'};
     }
 `;
 

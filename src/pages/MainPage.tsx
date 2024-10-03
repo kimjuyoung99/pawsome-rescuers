@@ -118,19 +118,25 @@ const Button = styled.button`
 
     color: #FFF;
     font-family: "Noto Sans";
-    font-size: 20px;
+    font-size: 22px;
     font-style: normal;
-    font-weight: 400;
+    font-weight: 600;
     line-height: normal;
     letter-spacing: -1.44px;
-
-    // 옵션: 포커스 시 나타나는 기본 아웃라인도 제거하고 싶다면 추가
-    &:focus {
-        outline: none;
-    }
+    box-shadow: 0px 6px 6px rgba(0, 0, 0, 0.2);//그림자
+    transition: all 0.3s ease;
+	// 옵션: 포커스 시 나타나는 기본 아웃라인도 제거하고 싶다면 추가
+	&:focus {
+		outline: none;
+	}
     &:hover {
-        background: #7ECDFF;
+  background: #7ecdff;
+  box-shadow: 0px 6px 7px rgba(0, 0, 0, 0.2);
     }
+    &:active {
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  transform: translateY(2px);
+}
 `;
 // PawIcon: 버튼 내의 발바닥 아이콘을 위한 컴포넌트입니다.
 const PawIcon = styled.span`
