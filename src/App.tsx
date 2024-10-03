@@ -11,6 +11,11 @@ import ScrapPage from "./pages/ScrapPage";
 import DetailPage from "./pages/DetailPage";
 import MatchingStart from "./pages/matching/MatchingStart";
 import Matching_1 from "./pages/matching/Matching_1";
+import Matching_2 from "./pages/matching/Matching_2";
+import Matching_3 from "./pages/matching/Matching_3";
+import Matching_4 from "./pages/matching/Matching_4";
+import MatchingLoading from "./pages/matching/MatchingLoading";
+import MatchingResult from "./pages/matching/MatchingResult";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +34,11 @@ const App: React.FC = () => {
             <Route path="/animallist/detail/:id" element={<DetailPage/>}/>
             <Route path="/matching" element={<MatchingStart/>}/>
             <Route path="/matching/test1" element={<Matching_1/>}/>
+            <Route path="/matching/test2" element={<Matching_2/>}/>
+            <Route path="/matching/test3" element={<Matching_3/>}/>
+            <Route path="/matching/test4" element={<Matching_4/>}/>
+            <Route path="/matching/loading" element={<MatchingLoading/>}/>
+            <Route path="/matching/result" element={<MatchingResult/>}/>
             <Route path="/scrap" element={<ScrapPage/>}/>
           </Routes>
         </AppContainter>

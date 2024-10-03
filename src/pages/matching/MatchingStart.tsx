@@ -8,8 +8,6 @@ import DogAndHuman3 from "../../assets/images/DogAndHuman3.png";
 import Cat1 from "../../assets/images/Cat1.png";
 import Paw from "../../assets/images/pow.svg";
 
-import ProgressBar from "../../components/ProgressBar";
-
 const AnimalMatching: React.FC = () => {
 	const [currentImageIndex, setCurrentImageIndex] = useState(0);
 	const images = [DogAndHuman1, DogAndHuman2, DogAndHuman3, Cat1];
@@ -21,6 +19,7 @@ const AnimalMatching: React.FC = () => {
 		}, 2000);
 		return () => clearInterval(interval);
 	}, []);
+	
     const handleMatchingStart = () => {
         navigate("/matching/test1");
     }

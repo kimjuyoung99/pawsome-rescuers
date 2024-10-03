@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Container } from "../../GlobalStyles";
 import ProgressBar from "../../components/ProgressBar";
@@ -10,6 +11,12 @@ import Rabbit from "../../assets/images/matching_images/Rabbit.svg"
 const Matching_1: React.FC = () => {
     const [currentQuestion, setCurrentQuestion] = useState(1);
     const totalQuestions = 4;
+    const navigate = useNavigate();
+
+    const handleNextStep = () => {
+        navigate("/matching/test2");
+    }
+
     return (
         <Container>
             <Container2>
@@ -17,7 +24,7 @@ const Matching_1: React.FC = () => {
                     <ProgressBar currentStep={currentQuestion} totalSteps={totalQuestions}/>
                 </ProgressBarWrapper>
                 <Explanation>
-                어느 날 눈 앞에 동물이 나에게 달려온다!<br/> 이 동물은 무엇일까?
+                꿈에서 나에게 어떤 동물이 달려온다!<br/> 이 동물은 무엇일까?
                 </Explanation>
 
                 <ChoiceContainer>
@@ -34,7 +41,7 @@ const Matching_1: React.FC = () => {
                         <Text>그 외</Text>
                     </ChoiceBox>
                 </ChoiceContainer>
-				<NextBtn>
+				<NextBtn onClick={handleNextStep}>
                     다음
 					<PawIcon>
 						<img src={Paw} />
