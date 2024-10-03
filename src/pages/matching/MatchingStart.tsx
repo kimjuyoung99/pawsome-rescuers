@@ -10,7 +10,7 @@ import Paw from "../../assets/images/pow.svg";
 
 const AnimalMatching: React.FC = () => {
 	const [currentImageIndex, setCurrentImageIndex] = useState(0);
-	const images = [DogAndHuman1, DogAndHuman2, DogAndHuman3, Cat1];
+	const images = [DogAndHuman1, DogAndHuman2, DogAndHuman3];
     const navigate = useNavigate();
 
 	useEffect(() => {
@@ -66,10 +66,17 @@ const Container1 = styled(Container)`
 `;
 
 const Container2 = styled.div`
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	padding-bottom: 1%;
+    height: 550px;
+    width: 900px;
+    max-height: 1000px;
+    max-width: 1200px;
+    margin-left: 10%;
+    margin-right: 10%;
+    border: 2px solid #E5E5E5;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 `;
 
 const ImageContainer = styled.div`

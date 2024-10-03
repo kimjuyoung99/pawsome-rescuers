@@ -2,12 +2,6 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Container } from "../../GlobalStyles";
-import ProgressBar from "../../components/ProgressBar";
-import Paw from "../../assets/images/pow.svg";
-import Key from "../../assets/images/matching_images/Key.svg";
-import Carria from "../../assets/images/matching_images/Carria.svg";
-import Car from "../../assets/images/matching_images/Car.svg";
-import House from "../../assets/images/matching_images/House.svg";
 
 const MatchingResult: React.FC = () => {
     const [currentQuestion, setCurrentQuestion] = useState(1);
@@ -21,37 +15,7 @@ const MatchingResult: React.FC = () => {
     return (
         <Container>
             <Container2>
-                <ProgressBarWrapper>
-                    <ProgressBar currentStep={currentQuestion} totalSteps={totalQuestions}/>
-                </ProgressBarWrapper>
-                <Explanation>
-                꿈에서 나에게 어떤 동물이 ㅈㅈㅈ달려온다!<br/> 이 동물은 무엇일까?
-                </Explanation>
-
-                <ChoiceContainer>
-                    <ChoiceBox>
-                        <BoxImg src={Key}></BoxImg>
-                        <Text>열쇠 크기</Text>
-                    </ChoiceBox>
-                    <ChoiceBox>
-                        <BoxImg src={Carria}></BoxImg>
-                        <Text>캐리어 크기</Text>
-                    </ChoiceBox>
-                    <ChoiceBox>
-                        <BoxImg src={Car}></BoxImg>
-                        <Text>자동차 크기</Text>
-                    </ChoiceBox>
-                    <ChoiceBox>
-                        <BoxImg src={House}></BoxImg>
-                        <Text>집 채</Text>
-                    </ChoiceBox>
-                </ChoiceContainer>
-				<NextBtn onClick={handleNextStep}>
-                    다음
-					<PawIcon>
-						<img src={Paw} />
-					</PawIcon>
-				</NextBtn>
+                    <h1>결과 화면은 아직 만들고 있지롱</h1>
             </Container2>
         </Container>
     );

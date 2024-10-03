@@ -1,4 +1,5 @@
 import React,{useEffect} from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useQuery } from "@tanstack/react-query";
 import { fetchAnimalData, AnimalData } from "../services/api";
@@ -7,6 +8,7 @@ import GogAndCat from "../assets/images/MainPage_Dog_and_Cat.svg"
 import Paw from '../assets/images/pow.svg';
 
 const MainPage: React.FC = () => {
+    const navigate = useNavigate();
     const {data: animalData} = useQuery<AnimalData[],Error>({
         queryKey:['animalData'],
         queryFn: () => fetchAnimalData(),
@@ -18,6 +20,10 @@ const MainPage: React.FC = () => {
             console.log("Animal Data:", animalData);
         }
     },[animalData]);
+
+    const handleMatching = () => {
+      navigate("/matching");
+    }
 
         return (
         <PageContainer>
@@ -31,7 +37,7 @@ const MainPage: React.FC = () => {
                     지금 당신의 따뜻한 마음을 기다리는 친구들이 있습니다.
                     <br /> 유기동물 입양으로 가족이 되어주세요.
                 </Subtitle>
-                <Button>
+                <Button onClick={handleMatching}>
                     나의 반려동물 찾기
                     <PawIcon><img src={Paw}/></PawIcon>
                 </Button>
