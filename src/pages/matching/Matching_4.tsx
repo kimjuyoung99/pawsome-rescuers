@@ -50,8 +50,8 @@ const Matching_4: React.FC = () => {
                         </ChoiceBox>
                     </A>
                     <B>
-                    <ChoiceBox>
-                            <BoxImg src={C}></BoxImg>
+                <ChoiceBox>
+                    <BoxImg src={C}></BoxImg>
                             <Text>금색</Text>
                         </ChoiceBox>
                         <ChoiceBox>
