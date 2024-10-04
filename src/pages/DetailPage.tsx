@@ -1,75 +1,142 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import scrapNo from "../assets/images/scrap_no.svg";
 import scrapYes from "../assets/images/scrap_yes.svg";
-import { Container} from "../GlobalStyles";
+import { Container } from "../GlobalStyles";
 import styled from "styled-components";
-import rectangle from "../assets/images/Rectangle 21.svg";
+import { AnimalData, fetchAnimalData } from "../services/api";
 
+// ScrapComponent는 그대로 유지
+
+const DetailPage: React.FC = () => {
+  const { id } = useParams<{ id: string }>();//특정 동물 id식별 : useParams 훅을 사용하여 URL에서 동물의 ID를 가져온다
+  const [animalData, setAnimalData] = useState<AnimalData | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchAnimalData();
+        const selectedAnimal = data.find(animal => animal.ABDM_IDNTFY_NO === id);
+        if (selectedAnimal) {
+          setAnimalData(selectedAnimal);
+        } else {
+          console.error("Animal not found");
+        }
+      } catch (error) {
+        console.error("Error fetching animal data:", error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  if (!animalData) return <div>Loading...</div>;
+
+  return (
+    <Container1>
+      <Section>
+        <Section1>
+          <Section1_1>
+            <AnnouncementNumber>
+              <ScrapComponent isScraped={false} />
+              공고번호 {animalData.PBLANC_IDNTFY_NO}
+            </AnnouncementNumber>
+            <StyledImage src={animalData.IMAGE_COURS} alt="animal" />
+          </Section1_1>
+          <Section1_2>
+            <Info>
+              <A>품종</A>
+              <B>{animalData.SPECIES_NM}</B>
+            </Info>
+            <Info>
+              <A>성별</A>
+              <B>{animalData.SEX_NM}</B>
+            </Info>
+            <Info>
+              <A>중성화여부</A>
+              <B>{animalData.NEUT_YN}</B>
+            </Info>
+            <Info>
+              <A>나이</A>
+              <B>{animalData.AGE_INFO}</B>
+            </Info>
+            <Info>
+              <A>체중</A>
+              <B>{animalData.BDWGH_INFO}</B>
+            </Info>
+            <Info>
+              <A>접수일시</A>
+              <B>{animalData.RECEPT_DE}</B>
+            </Info>
+            <Info>
+              <A>발견장소</A>
+              <B>{animalData.DISCVRY_PLC_INFO}</B>
+            </Info>
+            <Info>
+              <A>특징</A>
+              <B>{animalData.SFETR_INFO}</B>
+            </Info>
+            <Info>
+              <A>공고기한</A>
+              <B>{`${animalData.PBLANC_BEGIN_DE} ~ ${animalData.PBLANC_END_DE}`}</B>
+            </Info>
+            <Info>
+              <A>보호센터</A>
+              <B>{animalData.SHTER_NM}</B>
+            </Info>
+            <Info>
+              <A>센터주소</A>
+              <B>{animalData.REFINE_ROADNM_ADDR}</B>
+            </Info>
+            <Info>
+              <A>연락처</A>
+              <B>{animalData.SHTER_TELNO}</B>
+            </Info>
+          </Section1_2>
+        </Section1>
+
+        <Line />
+
+        <Section2>
+          <SectorName>
+            <span className="shelter-name">{animalData.SHTER_NM}</span>
+            <span className="waiting-text">에서 기다리고 있어요</span>
+          </SectorName>
+          <MapContainer>
+            <Map></Map>
+          </MapContainer>
+        </Section2>
+      </Section>
+    </Container1>
+  );
+};
+
+export default DetailPage;
 // Dummy data (통신 후 삭제)
-const dogInfo = {
-    품종: "포메라니안",
-    성별: "수컷",
-    중성화여부: "미완료",
-    나이: "1살",
-    체중: "2kg",
-    접수일시: "2024-09-20",
-    발견장소: "경기도 여주군 지저구",
-    특징: "5개월 추정, 귀엽고 사랑스럽다",
-    공고기한: "2024-09-06 ~ 2024-09-19",
-    보호센터: "경기도 유기동물보호소",
-    센터주소: "경기도 평택시 진위면 야막길 69",
-    연락처: "031-8024-3849"
-  };
+// const dogInfo = {
+//   품종: "포메라니안",
+//   성별: "수컷",
+//   중성화여부: "미완료",
+//   나이: "1살",
+//   체중: "2kg",
+//   접수일시: "2024-09-20",
+//   발견장소: "경기도 여주군 지저구",
+//   특징: "5개월 추정, 귀엽고 사랑스럽다",
+//   공고기한: "2024-09-06 ~ 2024-09-19",
+//   보호센터: "경기도 유기동물보호소",
+//   센터주소: "경기도 평택시 진위면 야막길 69",
+//   연락처: "031-8024-3849"
+// };
 
-  // ScrapComponent 생성
+// ScrapComponent 생성
 interface ScrapProps {
-    isScraped: boolean;
+  isScraped: boolean;
 }
 
 const ScrapComponent: React.FC<ScrapProps> = ({ isScraped }) => (
-    <Scrap>
-        <ScrapImage src={isScraped ? scrapYes : scrapNo} alt={isScraped ? "scrapYes" : "scrapNo"} />
-    </Scrap>
+  <Scrap>
+      <ScrapImage src={isScraped ? scrapYes : scrapNo} alt={isScraped ? "scrapYes" : "scrapNo"} />
+  </Scrap>
 );
-
-const DetailPage: React.FC = () => {
-
- return (
-    <Container1>
-        <Section>
-            <Section1>
-                <Section1_1>
-                <AnnouncementNumber><ScrapComponent isScraped={false} />
-                공고번호 경기-평택-2024-01466
-        </AnnouncementNumber>
-                <StyledImage src={rectangle} alt="rectangle" />
-                </Section1_1>
-                <Section1_2>                   
-                    {Object.entries(dogInfo).map(([key, value])=>(
-                        <Info key={key}>
-                            <A>{key}</A>
-                            <B>{value}</B>
-                        </Info>
-                    ))}
-                </Section1_2>
-            </Section1>
-
-            <Line/>
-
-            <Section2>
-                <SectorName>
-                      <span className="shelter-name">"보호소이름"</span>
-                      <span className="waiting-text">에서 기다리고 있어요</span>
-                </SectorName>
-                <MapContainer>
-                  <Map></Map>
-                </MapContainer>
-            </Section2>
-        </Section>
-     </Container1>
- );
-};
-export default DetailPage;
 
 // 전체 컨테이너 스타일링 커스텀
 const Container1 = styled(Container)`
@@ -156,6 +223,7 @@ const Section1_2 = styled.div`
 const StyledImage = styled.img`
   width: 100%;  // 부모 컨테이너에 맞춤
   max-width: 700px;  // 최대 너비 설정
+  max-height: 700px;
   height: auto;  // 비율 유지
   border-radius: 20px;
   margin-top: 5px;  // 상단 여백 조정

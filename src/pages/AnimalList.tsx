@@ -103,7 +103,7 @@ const AnimalList: React.FC = () => {
                     <Link to={`/animallist/detail/${animal.ABDM_IDNTFY_NO}`} key={animal.ABDM_IDNTFY_NO}>
                         <AnimalDataBox animal={animal} />
                     </Link>               
-                ))}
+                ))}     
             </AnimalListContainer>
 
             <Pagination>
