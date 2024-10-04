@@ -29,26 +29,22 @@ const AnimalList: React.FC = () => {
     const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [animalData, setAnimalData] = useState<AnimalData[]>([]);
-    const [currentItems, setCurrentItems] = useState<AnimalData[]>([]);
+    const [totalCount, setTotalCount] = useState(0);// 전체 데이터 개수를 저장할 상태
     const itemsPerPage = 15;
 
     useEffect(() => {
         const loadAnimals = async () => {
             try {
-                const data = await fetchAnimalData(currentPage, itemsPerPage);
-                setAnimalData(data);
+                const result = await fetchAnimalData(currentPage, itemsPerPage);
+                setAnimalData(result.data);
+                setTotalCount(result.totalCount);
             } catch (error) {
                 console.error('Failed to fetch animal data:', error);
             }
         };
-
+    
         loadAnimals();
     }, [currentPage]);
-
-    useEffect(() => {
-        setCurrentItems(animalData);
-    }, [animalData]);
-
     const handleMouseEnter = (filter: string) => {
         setActiveDropdown(filter);
     };
@@ -69,7 +65,20 @@ const AnimalList: React.FC = () => {
         }
     };
 
-    const totalPages = Math.ceil(animalData.length / itemsPerPage);
+        // 페이지네이션 버튼을 생성하는 함수
+        const getPageNumbers = () => {
+            let startPage = Math.max(1, currentPage - 2);
+            let endPage = Math.min(totalPages, startPage + 4);
+    
+            // 페이지 범위 조정
+            if (endPage - startPage < 4) {
+                startPage = Math.max(1, endPage - 4);
+            }
+    
+            return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
+        };
+
+    const totalPages = Math.ceil(totalCount / itemsPerPage);
 
     return (
         <Container>
@@ -99,13 +108,13 @@ const AnimalList: React.FC = () => {
             </FilterContainer>
 
             <AnimalListContainer>
-                {currentItems.map((animal) => (
+                {/* 수정: currentItems 대신 animalData 사용 */}
+                {animalData.map((animal) => (
                     <Link to={`/animallist/detail/${animal.ABDM_IDNTFY_NO}`} key={animal.ABDM_IDNTFY_NO}>
                         <AnimalDataBox animal={animal} />
                     </Link>               
                 ))}     
             </AnimalListContainer>
-
             <Pagination>
                 <Arrow onClick={handlePrevPage}>
                     <img 
@@ -113,7 +122,7 @@ const AnimalList: React.FC = () => {
                         alt="Previous page"
                     />
                 </Arrow>
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                {getPageNumbers().map((page) => (
                     <PageButton
                         key={page}
                         onClick={() => setCurrentPage(page)}

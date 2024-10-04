@@ -44,36 +44,36 @@ export interface AnimalData {
     }
 
 // 동물 데이터를 가져오는 비동기 함수
-export const fetchAnimalData = async (pIndex: number = 1, pSize: number = 10): Promise<AnimalData[]> => {
-    // API 키를 콘솔에 출력 (디버깅 목적, 실제 프로덕션에서는 제거해야 함)
+// 수정: 반환 타입 변경
+export const fetchAnimalData = async (pIndex: number = 1, pSize: number = 15): Promise<{ data: AnimalData[], totalCount: number }> => {
     console.log('API_KEY:', API_KEY);
     
     try {
-        // API 키가 정의되지 않았다면 에러 throw
         if (!API_KEY) {
             throw new Error('API key is not defined. Please check your environment variables.');
         }
 
-        // axios를 사용하여 GET 요청을 request
         const response = await axios.get(BASE_URL, {
             params: {
                 Key: API_KEY,
                 Type: 'json',
-                pIndex,  // 페이지 인덱스 명세서 대로 기본 1
-                pSize,   // 페이지 크기 명세서 대로 기본 10
+                pIndex,  // 수정: 페이지 인덱스 전달
+                pSize,   // 수정: 페이지 크기 전달
             }
         });
 
-        // API 응답 구조를 확인하고 데이터를 추출
         if (response.data && response.data.AbdmAnimalProtect && response.data.AbdmAnimalProtect[1]) {
-            return response.data.AbdmAnimalProtect[1].row;
+            // 추가: 전체 데이터 개수 추출
+            const totalCount = response.data.AbdmAnimalProtect[0].head[0].list_total_count;
+            return {
+                data: response.data.AbdmAnimalProtect[1].row,
+                totalCount: totalCount
+            };
         } else {
-            // 예상치 못한 응답 구조일 경우 에러 로그를 출력하고 빈 배열을 반환
             console.error('Unexpected API response structure:', response.data);
-            return [];
+            return { data: [], totalCount: 0 };  //에러 시 반환 형식 변경
         }
     } catch (error) {
-        // 에러 발생 시 콘솔에 로그를 출력하고 에러를 다시 throw
         console.error('Error fetching animal data:', error);
         throw error;
     }

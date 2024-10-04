@@ -6,28 +6,26 @@ import { Container } from "../GlobalStyles";
 import styled from "styled-components";
 import { AnimalData, fetchAnimalData } from "../services/api";
 
-// ScrapComponent는 그대로 유지
-
 const DetailPage: React.FC = () => {
-  const { id } = useParams<{ id: string }>();//특정 동물 id식별 : useParams 훅을 사용하여 URL에서 동물의 ID를 가져온다
+  const { id } = useParams<{ id: string }>();
   const [animalData, setAnimalData] = useState<AnimalData | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const data = await fetchAnimalData();
-        const selectedAnimal = data.find(animal => animal.ABDM_IDNTFY_NO === id);
-        if (selectedAnimal) {
-          setAnimalData(selectedAnimal);
-        } else {
-          console.error("Animal not found");
+        try {
+            const result = await fetchAnimalData();
+            const selectedAnimal = result.data.find(animal => animal.ABDM_IDNTFY_NO === id);
+            if (selectedAnimal) {
+                setAnimalData(selectedAnimal);
+            } else {
+                console.error("Animal not found");
+            }
+        } catch (error) {
+            console.error("Error fetching animal data:", error);
         }
-      } catch (error) {
-        console.error("Error fetching animal data:", error);
-      }
     };
     fetchData();
-  }, []);
+}, [id]);
 
   if (!animalData) return <div>Loading...</div>;
 
