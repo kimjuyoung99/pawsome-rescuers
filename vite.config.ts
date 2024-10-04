@@ -11,7 +11,7 @@ export default defineConfig({
   root: ".",      // .tsx 가 들어갈 폴더
   base: "/",                 // www.naver.com/뒤에/경로 (SSL전용 옵션) - 베이스 경로
   build: {                   // 빌드에 관한 설정
-    outDir: "../dist"
+    outDir: "dist"
   },
   server: {                  // 내장 서버 설정 (SSR❌)
     port: 3000,              // → 포트번호 수정

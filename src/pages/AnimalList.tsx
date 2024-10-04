@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Container,Arrow, Text1, AnimalListContainer, Pagination, PageButton } from '../GlobalStyles';
-
+import { Container, Arrow, Text1, AnimalListContainer, Pagination, PageButton } from '../GlobalStyles';
 import styled from "styled-components";
-import DataBox from "../components/DataBox";
+import AnimalDataBox from "../components/DataBox";  // 새로운 컴포넌트 import
 import FliterDropDown from "../components/FliterDropDown";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
+import { fetchAnimalData, AnimalData } from '../services/api';  // API 함수와 타입 import
 
 import ArrowDropDown from "../assets/images/arrow_drop_down.svg";
 import Arrow_left from "../assets/images/Arrow_left.svg";
@@ -14,27 +14,40 @@ import Arrow_right_blue from "../assets/images/Arrow_right_blue.svg";
 
 type FilterOptionsType = {
     [key: string]: string[];
-  };
-  
-  const filterOptions: FilterOptionsType = {
+};
+
+const filterOptions: FilterOptionsType = {
     '시도군': ['수원시', '성남시', '용인시', '부천시', '화성시', '평택시', '고양시', '남양주시', '오산시', '의정부시', '안양시', '광명시', '군포시', '이천시', '시흥시', '양주시', '하남시', '포천시', '여주시', '안산시', '김포시', '의왕시', '구리시', '동두천시'],
     '상태': ['전체', '보호중', '종료'],
     '나이': ['1살 미만', '1살~5살', '6살~9살', '10살 이상'],
     '성별': ['남아', '여아'],
     '중성화': ['완료', '미완료', '알수없음'],
     '품종': ['강아지', '고양이', '그외']
-  };
-  
-  // 임시 데이터 생성 (60개의 더미 데이터)
-  const mockAnimals = Array(58).fill(null).map((_, index) => ({
-    id: index + 1,
-    // 여기에 필요한 다른 속성들을 추가할 수 있습니다.
-  }));
+};
+
 const AnimalList: React.FC = () => {
     const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
-    const [currentItems, setCurrentItems] = useState<Array<{ id: number }>>([]);
+    const [animalData, setAnimalData] = useState<AnimalData[]>([]);
+    const [currentItems, setCurrentItems] = useState<AnimalData[]>([]);
     const itemsPerPage = 15;
+
+    useEffect(() => {
+        const loadAnimals = async () => {
+            try {
+                const data = await fetchAnimalData(currentPage, itemsPerPage);
+                setAnimalData(data);
+            } catch (error) {
+                console.error('Failed to fetch animal data:', error);
+            }
+        };
+
+        loadAnimals();
+    }, [currentPage]);
+
+    useEffect(() => {
+        setCurrentItems(animalData);
+    }, [animalData]);
 
     const handleMouseEnter = (filter: string) => {
         setActiveDropdown(filter);
@@ -44,7 +57,6 @@ const AnimalList: React.FC = () => {
         setActiveDropdown(null);
     };
 
-    //이전 페이지와 다음 페이지로 이동할 수 있게 하는 함수
     const handlePrevPage = () => {
         if (currentPage > 1) {
             setCurrentPage(currentPage - 1);
@@ -57,28 +69,15 @@ const AnimalList: React.FC = () => {
         }
     };
 
-    // 현재 페이지의 아이템들을 계산
-    useEffect(() => {
-        const getCurrentPageItems = () => {
-            const startIndex = (currentPage - 1) * itemsPerPage;
-            return mockAnimals.slice(startIndex, startIndex + itemsPerPage);
-        };
-        setCurrentItems(getCurrentPageItems());
-    }, [currentPage]);
-
-    // 총 페이지 수 계산
-    const totalPages = Math.ceil(mockAnimals.length / itemsPerPage);
+    const totalPages = Math.ceil(animalData.length / itemsPerPage);
 
     return (
         <Container>
             <Text1>공고기한이 하루 남은 친구들이에요!</Text1>
             <OnedayRemainContainer>
-                {/* 여기에 하루 남은 동물들을 표시 */}
-                <DataBox />
-                <DataBox />
-                <DataBox />
-                <DataBox />
-                <DataBox />
+                {animalData.slice(0, 5).map((animal) => (
+                    <AnimalDataBox key={animal.ABDM_IDNTFY_NO} animal={animal} />
+                ))}
             </OnedayRemainContainer>
 
             <FilterContainer>
@@ -101,8 +100,8 @@ const AnimalList: React.FC = () => {
 
             <AnimalListContainer>
                 {currentItems.map((animal) => (
-                    <Link to={`/animallist/detail/${animal.id}`} key={animal.id}>
-                        <DataBox />
+                    <Link to={`/animallist/detail/${animal.ABDM_IDNTFY_NO}`} key={animal.ABDM_IDNTFY_NO}>
+                        <AnimalDataBox animal={animal} />
                     </Link>               
                 ))}
             </AnimalListContainer>
@@ -144,7 +143,7 @@ const FilterContainer = styled.div`
     gap: 10px;
     margin-bottom: 20px;
     padding: 30px 0 10px 30px;
-    border: 3px solid blue;
+    /* border: 3px solid blue; */
 `;
 const FilterBox = styled.div`
     width: 76px;
@@ -177,6 +176,6 @@ const OnedayRemainContainer = styled.div`
     gap: 20px;
     justify-content: flex-start;
     margin: 0 0 20px 20px;
-    border: yellow solid 2px;
+    /* border: yellow solid 2px; */
 `;
 
