@@ -4,6 +4,9 @@ import scrapNo from "../assets/images/scrap_no.svg";
 import scrapYes from "../assets/images/scrap_yes.svg";
 import { Container } from "../GlobalStyles";
 import styled from "styled-components";
+import Cat1 from "../assets/images/Cat1.png";
+import { PropagateLoader } from "react-spinners";
+
 import { AnimalData, fetchAnimalDataById } from "../services/api";//fetchAnimalData -> fetchAnimalDataById로 변경
 
 const DetailPage: React.FC = () => {
@@ -27,7 +30,20 @@ const DetailPage: React.FC = () => {
   }, [id]);
 
 
-  if (!animalData) return <div>Loading...</div>;
+  if (!animalData) return (
+    <Container>
+    <Container2>
+
+      <PropagateLoader
+        color="#7ECDFF"
+        cssOverride={{
+          transform: "scale(2) translateY(-20px)", //위치 조정
+        }}
+      />
+      <Cat src={Cat1}></Cat>
+    </Container2>
+  </Container>
+  );
 
   return (
     <Container1>
@@ -299,4 +315,26 @@ width: 916px;
 height: 462px;
 border-radius: 20px;
 background-color: #79c7ff;
+`;
+
+const Container2 = styled.div`
+margin-top: 70%;
+	height: 550px;
+	width: 900px;
+	max-height: 1000px;
+	max-width: 1200px;
+	margin-left: 10%;
+	margin-right: 10%;
+	/* border: 2px solid #e5e5e5; */
+	border-radius: 20px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+`;
+
+const Cat = styled.img`
+	margin-left: 10%;
+	margin-top: 6%;
+	width: 200px;
+	height: 200px;
 `;

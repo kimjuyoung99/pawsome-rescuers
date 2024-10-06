@@ -33,7 +33,7 @@ const MatchingLoading: React.FC = () => {
 				<PropagateLoader
 					color="#7ECDFF"
 					cssOverride={{
-						transform: "scale(2) translateY(-20px)", // translateY를 추가하여 위치 조정
+						transform: "scale(2) translateY(-20px)", //위치 조정
 					}}
 				/>
 				<Cat src={Cat1}></Cat>

@@ -181,9 +181,7 @@ const AnimalList: React.FC = () => {
 						slidesPerView={5}
 						spaceBetween={1}
 						slidesOffsetBefore={50}
-						pagination={{
-							type: "fraction",
-						}}
+
 						navigation={{
 							nextEl: ".swiper-button-next",
 							prevEl: ".swiper-button-prev",
