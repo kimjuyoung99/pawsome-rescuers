@@ -13,6 +13,7 @@ import FliterDropDown from "../components/FliterDropDown";
 import { Link } from "react-router-dom";
 import { fetchAnimalData, AnimalData } from "../services/api"; // API 함수와 타입 import
 import { Swiper, SwiperSlide } from "swiper/react";
+import { PropagateLoader } from "react-spinners";
 import {
 	Virtual,
 	Navigation,
@@ -33,7 +34,6 @@ import Arrow_right_blue from "../assets/images/Arrow_right_blue.svg";
 type FilterOptionsType = {
 	[key: string]: string[];
 };
-
 
 const filterOptions: FilterOptionsType = {
 	시도군: [
@@ -77,47 +77,44 @@ const AnimalList: React.FC = () => {
 	const [urgentAnimals, setUrgentAnimals] = useState<AnimalData[]>([]);
 	const itemsPerPage = 15;
 
-    useEffect(() => {
-        const loadAllAnimals = async () => {
-            try {
-                const allAnimals = await fetchAllAnimalData();
-                const filteredUrgentAnimals = getFilteredUrgentAnimals(allAnimals);
-                setUrgentAnimals(filteredUrgentAnimals);
-            } catch (error) {
-                console.error("Failed to fetch all animal data:", error);
-            }
-        };
+	useEffect(() => {
+		const loadAllAnimals = async () => {
+			try {
+				const allAnimals = await fetchAllAnimalData();
+				const filteredUrgentAnimals = getFilteredUrgentAnimals(allAnimals);
+				setUrgentAnimals(filteredUrgentAnimals);
+			} catch (error) {
+				console.error("Failed to fetch all animal data:", error);
+			}
+		};
 
-        loadAllAnimals();
-    }, []); // 컴포넌트 마운트 시 한 번만 실행
+		loadAllAnimals();
+	}, []); // 컴포넌트 마운트 시 한 번만 실행
 
-    useEffect(() => {
-        const loadPagedAnimals = async () => {
-            try {
-                const result = await fetchAnimalData(currentPage, itemsPerPage);
-                setAnimalData(result.data);
-                setTotalCount(result.totalCount);
-            } catch (error) {
-                console.error("Failed to fetch paged animal data:", error);
-            }
-        };
+	useEffect(() => {
+		const loadPagedAnimals = async () => {
+			try {
+				const result = await fetchAnimalData(currentPage, itemsPerPage);
+				setAnimalData(result.data);
+				setTotalCount(result.totalCount);
+			} catch (error) {
+				console.error("Failed to fetch paged animal data:", error);
+			}
+		};
 
-        loadPagedAnimals();
-    }, [currentPage]);
+		loadPagedAnimals();
+	}, [currentPage]);
 
-        // 전체 데이터를 가져오는 함수 (공고 종료 날짜 필터링 하기 위해)
-        const fetchAllAnimalData = async () => {
-            try {
-
-                const allData = await fetchAnimalData(1, 1000); // 매우 큰 숫자로 모든 데이터 요청
-                return allData.data;
-            } catch (error) {
-                console.error("Failed to fetch all animal data:", error);
-                return [];
-            }
-        };
-    
-
+	// 전체 데이터를 가져오는 함수 (공고 종료 날짜 필터링 하기 위해)
+	const fetchAllAnimalData = async () => {
+		try {
+			const allData = await fetchAnimalData(1, 1000); // 매우 큰 숫자로 모든 데이터 요청
+			return allData.data;
+		} catch (error) {
+			console.error("Failed to fetch all animal data:", error);
+			return [];
+		}
+	};
 
 	//공고 데이터 파싱 함수
 	const parseDate = (dateString: string): Date => {
@@ -206,20 +203,29 @@ const AnimalList: React.FC = () => {
 						}}
 						virtual
 					>
-{urgentAnimals.map((animal, index) => (
-                            <SwiperSlide key={animal.ABDM_IDNTFY_NO} virtualIndex={index}>
-                                <Link to={`/animallist/detail/${animal.ABDM_IDNTFY_NO}`}>
-                                    <AnimalDataBox animal={animal} />
-                                </Link>
-                            </SwiperSlide>
-                        ))}
+						{urgentAnimals.map((animal, index) => (
+							<SwiperSlide key={animal.ABDM_IDNTFY_NO} virtualIndex={index}>
+								<Link to={`/animallist/detail/${animal.ABDM_IDNTFY_NO}`}>
+									<AnimalDataBox animal={animal} />
+								</Link>
+							</SwiperSlide>
+						))}
 						<div className="swiper-button-prev"></div>
 						<div className="swiper-button-next"></div>
 					</Swiper>
 				) : (
 					<NoUrgentAnimals>
-						현재 긴급 공고 중인 동물이 없습니다.
-					</NoUrgentAnimals>
+            <Container2>
+                <LoaderWrapper>
+                <PropagateLoader
+                    color="#7ECDFF"
+                    cssOverride={{
+                    transform: "scale(1)",
+                    }}
+                />
+                </LoaderWrapper>
+            </Container2>					
+        </NoUrgentAnimals>
 				)}
 			</UrgentAnimalContainer>
 
@@ -256,7 +262,7 @@ const AnimalList: React.FC = () => {
 					</Link>
 				))}
 			</AnimalListContainer>
-            
+
 			<Pagination>
 				<Arrow onClick={handlePrevPage}>
 					<img
@@ -360,4 +366,29 @@ const NoUrgentAnimals = styled.div`
 	padding: 10px;
 	font-size: 18px;
 	color: #666;
+`;
+
+const Container2 = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 550px;
+  width: 900px;
+  max-height: 1000px;
+  max-width: 1200px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* background-color: white; // 배경색 추가 */
+  z-index: 1000; // 다른 요소들 위에 표시
+`;
+
+const LoaderWrapper = styled.div`
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 `;

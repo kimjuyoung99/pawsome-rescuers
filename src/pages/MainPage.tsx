@@ -8,6 +8,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import GogAndCat from "../assets/images/MainPage_Dog_and_Cat.svg";
 import Paw from "../assets/images/pow.svg";
 import AnimalDataBox from "../components/DataBox"; // 새로운 컴포넌트 import
+import { PropagateLoader } from "react-spinners";
 
 import {
 	Virtual,
@@ -22,87 +23,84 @@ import "swiper/css/navigation";
 
 const MainPage: React.FC = () => {
 	const navigate = useNavigate();
-  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+	const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [animalData, setAnimalData] = useState<AnimalData[]>([]);
 	const [totalCount, setTotalCount] = useState(0); // 전체 데이터 개수를 저장할 상태
 	const itemsPerPage = 15;
 	const [urgentAnimals, setUrgentAnimals] = useState<AnimalData[]>([]);
 
-  useEffect(() => {
-    const loadAllAnimals = async () => {
-        try {
-            const allAnimals = await fetchAllAnimalData();
-            const filteredUrgentAnimals = getFilteredUrgentAnimals(allAnimals);
-            setUrgentAnimals(filteredUrgentAnimals);
-        } catch (error) {
-            console.error("Failed to fetch all animal data:", error);
-        }
-    };
+	useEffect(() => {
+		const loadAllAnimals = async () => {
+			try {
+				const allAnimals = await fetchAllAnimalData();
+				const filteredUrgentAnimals = getFilteredUrgentAnimals(allAnimals);
+				setUrgentAnimals(filteredUrgentAnimals);
+			} catch (error) {
+				console.error("Failed to fetch all animal data:", error);
+			}
+		};
 
-    loadAllAnimals();
-}, []); // 컴포넌트 마운트 시 한 번만 실행
+		loadAllAnimals();
+	}, []); // 컴포넌트 마운트 시 한 번만 실행
 
-useEffect(() => {
-    const loadPagedAnimals = async () => {
-        try {
-            const result = await fetchAnimalData(currentPage, itemsPerPage);
-            setAnimalData(result.data);
-            setTotalCount(result.totalCount);
-        } catch (error) {
-            console.error("Failed to fetch paged animal data:", error);
-        }
-    };
+	useEffect(() => {
+		const loadPagedAnimals = async () => {
+			try {
+				const result = await fetchAnimalData(currentPage, itemsPerPage);
+				setAnimalData(result.data);
+				setTotalCount(result.totalCount);
+			} catch (error) {
+				console.error("Failed to fetch paged animal data:", error);
+			}
+		};
 
-    loadPagedAnimals();
-}, [currentPage]);
+		loadPagedAnimals();
+	}, [currentPage]);
 
-    // 전체 데이터를 가져오는 함수 (공고 종료 날짜 필터링 하기 위해)
-    const fetchAllAnimalData = async () => {
-        try {
+	// 전체 데이터를 가져오는 함수 (공고 종료 날짜 필터링 하기 위해)
+	const fetchAllAnimalData = async () => {
+		try {
+			const allData = await fetchAnimalData(1, 1000); // 매우 큰 숫자로 모든 데이터 요청
+			return allData.data;
+		} catch (error) {
+			console.error("Failed to fetch all animal data:", error);
+			return [];
+		}
+	};
 
-            const allData = await fetchAnimalData(1, 1000); // 매우 큰 숫자로 모든 데이터 요청
-            return allData.data;
-        } catch (error) {
-            console.error("Failed to fetch all animal data:", error);
-            return [];
-        }
-    };
+	//공고 데이터 파싱 함수
+	const parseDate = (dateString: string): Date => {
+		const year = parseInt(dateString.substring(0, 4));
+		const month = parseInt(dateString.substring(4, 6)) - 1; // 월은 0부터 시작
+		const day = parseInt(dateString.substring(6, 8));
+		return new Date(year, month, day);
+	};
 
+	const getFilteredUrgentAnimals = (animals: AnimalData[]): AnimalData[] => {
+		const today = new Date();
+		today.setHours(0, 0, 0, 0); // 시간을 00:00:00으로 설정
+		//fivedays 이지만.. 실제 수정은 3일 마감으로 설정
+		const fiveDaysLater = new Date(today.getTime() + 2 * 24 * 60 * 60 * 1000);
+		fiveDaysLater.setHours(23, 59, 59, 999); // 시간을 23:59:59.999로 설정
 
+		// console.log("오늘 날짜:", today);
+		// console.log("5일 후 날짜:", fiveDaysLater);
+		// console.log("총 필터링 동물 수 :", animals.length);
 
-//공고 데이터 파싱 함수
-const parseDate = (dateString: string): Date => {
-const year = parseInt(dateString.substring(0, 4));
-const month = parseInt(dateString.substring(4, 6)) - 1; // 월은 0부터 시작
-const day = parseInt(dateString.substring(6, 8));
-return new Date(year, month, day);
-};
+		const filteredAnimals = animals.filter((animal) => {
+			const endDate = parseDate(animal.PBLANC_END_DE);
+			// console.log("Animal ID:", animal.ABDM_IDNTFY_NO);
+			// console.log("공고 마감 날짜 : ", animal.PBLANC_END_DE);
+			// console.log("내가 정한 마감 날짜 :", endDate);
+			const isUrgent = endDate >= today && endDate <= fiveDaysLater;
+			console.log("Is urgent:", isUrgent);
+			return isUrgent;
+		});
 
-const getFilteredUrgentAnimals = (animals: AnimalData[]): AnimalData[] => {
-const today = new Date();
-today.setHours(0, 0, 0, 0); // 시간을 00:00:00으로 설정
-//fivedays 이지만.. 실제 수정은 3일 마감으로 설정
-const fiveDaysLater = new Date(today.getTime() + 2 * 24 * 60 * 60 * 1000);
-fiveDaysLater.setHours(23, 59, 59, 999); // 시간을 23:59:59.999로 설정
-
-// console.log("오늘 날짜:", today);
-// console.log("5일 후 날짜:", fiveDaysLater);
-// console.log("총 필터링 동물 수 :", animals.length);
-
-const filteredAnimals = animals.filter((animal) => {
-  const endDate = parseDate(animal.PBLANC_END_DE);
-  // console.log("Animal ID:", animal.ABDM_IDNTFY_NO);
-  // console.log("공고 마감 날짜 : ", animal.PBLANC_END_DE);
-  // console.log("내가 정한 마감 날짜 :", endDate);
-  const isUrgent = endDate >= today && endDate <= fiveDaysLater;
-  console.log("Is urgent:", isUrgent);
-  return isUrgent;
-});
-
-console.log("Filtered urgent animals:", filteredAnimals.length);
-return filteredAnimals;
-};
+		console.log("Filtered urgent animals:", filteredAnimals.length);
+		return filteredAnimals;
+	};
 
 	const handleMatching = () => {
 		navigate("/matching");
@@ -132,46 +130,80 @@ return filteredAnimals;
 				</AnimalsContainer>
 			</ContentWrapper>
 
-				<SwiperContainer>
-					<Text1>공고기한이 얼마 남지 않은 친구들이에요!</Text1>
-					<UrgentAnimalContainer>
-						{urgentAnimals.length > 0 ? (
-							<Swiper
-								modules={[Virtual, Navigation, SwiperPagination]}
-								slidesPerView={5}
-								spaceBetween={-50}
-								slidesOffsetBefore={50}
-								navigation={{
-									nextEl: ".swiper-button-next",
-									prevEl: ".swiper-button-prev",
-								}}
-								virtual
-							>
-								{urgentAnimals.map((animal, index) => (
-									<SwiperSlide key={animal.ABDM_IDNTFY_NO} virtualIndex={index}>
-										<Link to={`/animallist/detail/${animal.ABDM_IDNTFY_NO}`}>
-											<AnimalDataBox animal={animal} />
-										</Link>
-									</SwiperSlide>
-								))}
-								<div className="swiper-button-prev"></div>
-								<div className="swiper-button-next"></div>
-							</Swiper>
-						) : (
-							<NoUrgentAnimals>
-								현재 긴급 공고 중인 동물이 없습니다.
-							</NoUrgentAnimals>
-						)}
-					</UrgentAnimalContainer>
-				</SwiperContainer>
+			<SwiperContainer>
+				<Text1>공고기한이 얼마 남지 않은 친구들이에요!</Text1>
+				<UrgentAnimalContainer>
+					{urgentAnimals.length > 0 ? (
+						<Swiper
+							modules={[Virtual, Navigation, SwiperPagination]}
+							slidesPerView={5}
+							spaceBetween={-45}
+							slidesOffsetBefore={50}
+							navigation={{
+								nextEl: ".swiper-button-next",
+								prevEl: ".swiper-button-prev",
+							}}
+							virtual
+						>
+							{urgentAnimals.map((animal, index) => (
+								<SwiperSlide key={animal.ABDM_IDNTFY_NO} virtualIndex={index}>
+									<Link to={`/animallist/detail/${animal.ABDM_IDNTFY_NO}`}>
+										<AnimalDataBox animal={animal} />
+									</Link>
+								</SwiperSlide>
+							))}
+							<div className="swiper-button-prev"></div>
+							<div className="swiper-button-next"></div>
+						</Swiper>
+					) : (
+						<NoUrgentAnimals>
+							<Container2>
+								<LoaderWrapper>
+									<PropagateLoader
+										color="#7ECDFF"
+										cssOverride={{
+											transform: "scale(1)",
+										}}
+									/>
+								</LoaderWrapper>
+							</Container2>
+						</NoUrgentAnimals>
+					)}
+				</UrgentAnimalContainer>
+			</SwiperContainer>
 		</PageContainer>
 	);
 };
 
 export default MainPage;
 
+const Container2 = styled.div`
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	height: 550px;
+	width: 900px;
+	max-height: 1000px;
+	max-width: 1200px;
+	border-radius: 20px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	/* background-color: white; // 배경색 추가 */
+	z-index: 1000; // 다른 요소들 위에 표시
+`;
+
+const LoaderWrapper = styled.div`
+	position: absolute;
+	top: 110%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+`;
+
 const SwiperContainer = styled.div`
-    /* border:2px solid red; */
+	/* border:2px solid red; */
 `;
 
 const PageContainer = styled.div`
