@@ -30,6 +30,7 @@ const AnimalList: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [animalData, setAnimalData] = useState<AnimalData[]>([]);
     const [totalCount, setTotalCount] = useState(0);// 전체 데이터 개수를 저장할 상태
+    const [urgentAnimals, setUrgentAnimals] = useState<AnimalData[]>([]);
     const itemsPerPage = 15;
 
     useEffect(() => {
@@ -38,6 +39,10 @@ const AnimalList: React.FC = () => {
                 const result = await fetchAnimalData(currentPage, itemsPerPage);
                 setAnimalData(result.data);
                 setTotalCount(result.totalCount);
+
+                console.log('Fetched animals:', result.data);
+                const filteredUrgentAnimals: AnimalData[] = getFilteredUrgentAnimals(result.data);
+                setUrgentAnimals(filteredUrgentAnimals);
             } catch (error) {
                 console.error('Failed to fetch animal data:', error);
             }
@@ -45,6 +50,40 @@ const AnimalList: React.FC = () => {
     
         loadAnimals();
     }, [currentPage]);
+
+    //공고 데이터 파싱 함수
+    const parseDate = (dateString: string): Date => { 
+        const year = parseInt(dateString.substring(0, 4));
+        const month = parseInt(dateString.substring(4, 6)) - 1; // 월은 0부터 시작
+        const day = parseInt(dateString.substring(6, 8));
+        return new Date(year, month, day);
+    };
+
+const getFilteredUrgentAnimals = (animals: AnimalData[]): AnimalData[] => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // 시간을 00:00:00으로 설정
+    //fivedays 이지만.. 실제 수정은 3일 마감으로 설정
+    const fiveDaysLater = new Date(today.getTime() + 3 * 24 * 60 * 60 * 1000);
+    fiveDaysLater.setHours(23, 59, 59, 999); // 시간을 23:59:59.999로 설정
+    
+    console.log('오늘 날짜:', today);
+    console.log('5일 후 날짜:', fiveDaysLater);
+    console.log('총 필터링 동물 수 :', animals.length);
+
+    const filteredAnimals = animals.filter(animal => {
+        const endDate = parseDate(animal.PBLANC_END_DE);
+        console.log('Animal ID:', animal.ABDM_IDNTFY_NO);
+        console.log('공고 마감 날짜 : ', animal.PBLANC_END_DE);
+        console.log('내가 정한 마감 날짜 :', endDate);
+        const isUrgent = endDate >= today && endDate <= fiveDaysLater;
+        console.log('Is urgent:', isUrgent);
+        return isUrgent;
+    });
+
+    console.log('Filtered urgent animals:', filteredAnimals.length);
+    return filteredAnimals;
+};
+
     const handleMouseEnter = (filter: string) => {
         setActiveDropdown(filter);
     };
@@ -82,11 +121,18 @@ const AnimalList: React.FC = () => {
 
     return (
         <Container>
-            <Text1>공고기한이 하루 남은 친구들이에요!</Text1>
+            <Text1>공고기한이 얼마 남지 않은 친구들이에요!</Text1>
             <OnedayRemainContainer>
-                {animalData.slice(0, 5).map((animal) => (
-                    <AnimalDataBox key={animal.ABDM_IDNTFY_NO} animal={animal} />
-                ))}
+                {urgentAnimals.length > 0 ? (
+                    urgentAnimals.map((animal) => (
+                        <Link to={`/animallist/detail/${animal.ABDM_IDNTFY_NO}`} key={animal.ABDM_IDNTFY_NO}>
+                            <AnimalDataBox animal={animal}/>
+                        </Link>
+                    ))
+                ) : (
+                    <NoUrgentAnimals>현재 긴급 공고 중인 동물이 없습니다.</NoUrgentAnimals>
+                
+                )}
             </OnedayRemainContainer>
 
             <FilterContainer>
@@ -186,5 +232,14 @@ const OnedayRemainContainer = styled.div`
     justify-content: flex-start;
     margin: 0 0 20px 20px;
     /* border: yellow solid 2px; */
+`;
+
+const NoUrgentAnimals = styled.div`
+display: flex;
+flex-wrap: wrap;
+gap: 20px;
+justify-content: flex-start;
+margin: 0 0 20px 20px;
+/* border: yellow solid 2px; */
 `;
 
