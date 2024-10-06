@@ -45,9 +45,43 @@ export interface AnimalData {
 
 // 동물 데이터를 가져오는 비동기 함수
 // 수정: 반환 타입 변경
+// 주석: 특정 ID의 동물 데이터를 가져오는 함수
+export const fetchAnimalDataById = async (id: string): Promise<AnimalData | null> => {
+    console.log('Fetching data for animal ID:', id);
+    
+    try {
+        if (!API_KEY) {
+            throw new Error('API key is not defined. Please check your environment variables.');
+        }
+
+        const response = await axios.get(BASE_URL, {
+            params: {
+                Key: API_KEY,
+                Type: 'json',
+                pSize: 1000  // 충분히 큰 수를 지정하여 모든 데이터를 가져옴
+            }
+        });
+
+        console.log('API Response:', response.data);
+
+        if (response.data && response.data.AbdmAnimalProtect && response.data.AbdmAnimalProtect[1]) {
+            const allAnimalData = response.data.AbdmAnimalProtect[1].row;
+            // 클라이언트 측에서 ID를 기반으로 필터링
+            const animalData = allAnimalData.find((animal: AnimalData) => animal.ABDM_IDNTFY_NO === id);
+            return animalData || null;
+        } else {
+            console.error('Unexpected API response structure:', response.data);
+            return null;
+        }
+    } catch (error) {
+        console.error('Error fetching animal data:', error);
+        throw error;
+    }
+}
+
 export const fetchAnimalData = async (pIndex: number = 1, pSize: number = 15): Promise<{ data: AnimalData[], totalCount: number }> => {
     console.log('API_KEY:', API_KEY);
-    
+
     try {
         if (!API_KEY) {
             throw new Error('API key is not defined. Please check your environment variables.');

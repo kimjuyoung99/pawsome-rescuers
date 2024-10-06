@@ -112,7 +112,7 @@ const AnimalList: React.FC = () => {
                 {animalData.map((animal) => (
                     <Link to={`/animallist/detail/${animal.ABDM_IDNTFY_NO}`} key={animal.ABDM_IDNTFY_NO}>
                         <AnimalDataBox animal={animal} />
-                    </Link>               
+                    </Link>    
                 ))}     
             </AnimalListContainer>
             <Pagination>

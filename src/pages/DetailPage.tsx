@@ -4,7 +4,7 @@ import scrapNo from "../assets/images/scrap_no.svg";
 import scrapYes from "../assets/images/scrap_yes.svg";
 import { Container } from "../GlobalStyles";
 import styled from "styled-components";
-import { AnimalData, fetchAnimalData } from "../services/api";
+import { AnimalData, fetchAnimalDataById } from "../services/api";//fetchAnimalData -> fetchAnimalDataById로 변경
 
 const DetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -12,20 +12,20 @@ const DetailPage: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      if(id){
+        console.log("Fetching data for animal ID:", id); // 주석: ID 로깅 추가
         try {
-            const result = await fetchAnimalData();
-            const selectedAnimal = result.data.find(animal => animal.ABDM_IDNTFY_NO === id);
-            if (selectedAnimal) {
-                setAnimalData(selectedAnimal);
-            } else {
-                console.error("Animal not found");
-            }
+            const data = await fetchAnimalDataById(id);
+            console.log("Fetched animal data:", data); // 주석: 받아온 데이터 로깅
+            setAnimalData(data);
         } catch (error) {
             console.error("Error fetching animal data:", error);
         }
+      }
     };
     fetchData();
-}, [id]);
+  }, [id]);
+
 
   if (!animalData) return <div>Loading...</div>;
 
