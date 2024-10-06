@@ -15,7 +15,6 @@ const DataBox: React.FC<{ animal: AnimalData }> = ({ animal }) => {
     const getNeuterStatus = (neutYn: string) => {
         return neutYn === 'N' ? '중성화 미완료' : '중성화 완료';
     };
-	console.log("IMAGE_COURS : ",animal.IMAGE_COURS);
 
     return (
         <StyledBox>

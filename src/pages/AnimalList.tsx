@@ -34,9 +34,6 @@ type FilterOptionsType = {
 	[key: string]: string[];
 };
 
-interface OnedayRemainContainerProps {
-	urgentAnimals: AnimalData[];
-}
 
 const filterOptions: FilterOptionsType = {
 	시도군: [
@@ -80,25 +77,47 @@ const AnimalList: React.FC = () => {
 	const [urgentAnimals, setUrgentAnimals] = useState<AnimalData[]>([]);
 	const itemsPerPage = 15;
 
-	useEffect(() => {
-		const loadAnimals = async () => {
-			try {
-				const result = await fetchAnimalData(currentPage, itemsPerPage);
-				setAnimalData(result.data);
-				setTotalCount(result.totalCount);
+    useEffect(() => {
+        const loadAllAnimals = async () => {
+            try {
+                const allAnimals = await fetchAllAnimalData();
+                const filteredUrgentAnimals = getFilteredUrgentAnimals(allAnimals);
+                setUrgentAnimals(filteredUrgentAnimals);
+            } catch (error) {
+                console.error("Failed to fetch all animal data:", error);
+            }
+        };
 
-				console.log("Fetched animals:", result.data);
-				const filteredUrgentAnimals: AnimalData[] = getFilteredUrgentAnimals(
-					result.data,
-				);
-				setUrgentAnimals(filteredUrgentAnimals);
-			} catch (error) {
-				console.error("Failed to fetch animal data:", error);
-			}
-		};
+        loadAllAnimals();
+    }, []); // 컴포넌트 마운트 시 한 번만 실행
 
-		loadAnimals();
-	}, [currentPage]);
+    useEffect(() => {
+        const loadPagedAnimals = async () => {
+            try {
+                const result = await fetchAnimalData(currentPage, itemsPerPage);
+                setAnimalData(result.data);
+                setTotalCount(result.totalCount);
+            } catch (error) {
+                console.error("Failed to fetch paged animal data:", error);
+            }
+        };
+
+        loadPagedAnimals();
+    }, [currentPage]);
+
+        // 전체 데이터를 가져오는 함수 (공고 종료 날짜 필터링 하기 위해)
+        const fetchAllAnimalData = async () => {
+            try {
+
+                const allData = await fetchAnimalData(1, 1000); // 매우 큰 숫자로 모든 데이터 요청
+                return allData.data;
+            } catch (error) {
+                console.error("Failed to fetch all animal data:", error);
+                return [];
+            }
+        };
+    
+
 
 	//공고 데이터 파싱 함수
 	const parseDate = (dateString: string): Date => {
@@ -112,18 +131,18 @@ const AnimalList: React.FC = () => {
 		const today = new Date();
 		today.setHours(0, 0, 0, 0); // 시간을 00:00:00으로 설정
 		//fivedays 이지만.. 실제 수정은 3일 마감으로 설정
-		const fiveDaysLater = new Date(today.getTime() + 3 * 24 * 60 * 60 * 1000);
+		const fiveDaysLater = new Date(today.getTime() + 2 * 24 * 60 * 60 * 1000);
 		fiveDaysLater.setHours(23, 59, 59, 999); // 시간을 23:59:59.999로 설정
 
-		console.log("오늘 날짜:", today);
-		console.log("5일 후 날짜:", fiveDaysLater);
-		console.log("총 필터링 동물 수 :", animals.length);
+		// console.log("오늘 날짜:", today);
+		// console.log("5일 후 날짜:", fiveDaysLater);
+		// console.log("총 필터링 동물 수 :", animals.length);
 
 		const filteredAnimals = animals.filter((animal) => {
 			const endDate = parseDate(animal.PBLANC_END_DE);
-			console.log("Animal ID:", animal.ABDM_IDNTFY_NO);
-			console.log("공고 마감 날짜 : ", animal.PBLANC_END_DE);
-			console.log("내가 정한 마감 날짜 :", endDate);
+			// console.log("Animal ID:", animal.ABDM_IDNTFY_NO);
+			// console.log("공고 마감 날짜 : ", animal.PBLANC_END_DE);
+			// console.log("내가 정한 마감 날짜 :", endDate);
 			const isUrgent = endDate >= today && endDate <= fiveDaysLater;
 			console.log("Is urgent:", isUrgent);
 			return isUrgent;
@@ -173,7 +192,7 @@ const AnimalList: React.FC = () => {
 
 	return (
 		<Container>
-			<Text1>공고기한이 얼마 남지 않은 친구들이에요!</Text1>
+			<Text1>공고기한이 이틀 남은 친구들이에요!</Text1>
 			<UrgentAnimalContainer>
 				{urgentAnimals.length > 0 ? (
 					<Swiper
@@ -181,20 +200,19 @@ const AnimalList: React.FC = () => {
 						slidesPerView={5}
 						spaceBetween={1}
 						slidesOffsetBefore={50}
-
 						navigation={{
 							nextEl: ".swiper-button-next",
 							prevEl: ".swiper-button-prev",
 						}}
 						virtual
 					>
-						{urgentAnimals.map((animal, index) => (
-							<SwiperSlide key={animal.ABDM_IDNTFY_NO} virtualIndex={index}>
-								<Link to={`/animallist/detail/${animal.ABDM_IDNTFY_NO}`}>
-									<AnimalDataBox animal={animal} />
-								</Link>
-							</SwiperSlide>
-						))}
+{urgentAnimals.map((animal, index) => (
+                            <SwiperSlide key={animal.ABDM_IDNTFY_NO} virtualIndex={index}>
+                                <Link to={`/animallist/detail/${animal.ABDM_IDNTFY_NO}`}>
+                                    <AnimalDataBox animal={animal} />
+                                </Link>
+                            </SwiperSlide>
+                        ))}
 						<div className="swiper-button-prev"></div>
 						<div className="swiper-button-next"></div>
 					</Swiper>
@@ -238,6 +256,7 @@ const AnimalList: React.FC = () => {
 					</Link>
 				))}
 			</AnimalListContainer>
+            
 			<Pagination>
 				<Arrow onClick={handlePrevPage}>
 					<img
@@ -302,14 +321,6 @@ const FilterBox = styled.div`
 `;
 
 //공고 하루 남은 동물 리스트
-const OnedayRemainContainer = styled.div`
-	display: flex;
-	flex-wrap: wrap;
-	gap: 20px;
-	justify-content: flex-start;
-	margin: 0 0 20px 20px;
-	/* border: yellow solid 2px; */
-`;
 const UrgentAnimalContainer = styled.div`
 	width: 100%;
 	padding: 20px 0;

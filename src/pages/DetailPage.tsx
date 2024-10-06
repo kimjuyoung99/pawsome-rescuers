@@ -31,18 +31,19 @@ const DetailPage: React.FC = () => {
 
 
   if (!animalData) return (
-    <Container>
-    <Container2>
 
-      <PropagateLoader
-        color="#7ECDFF"
-        cssOverride={{
-          transform: "scale(2) translateY(-20px)", //위치 조정
-        }}
-      />
-      <Cat src={Cat1}></Cat>
-    </Container2>
-  </Container>
+      <Container2>
+        <LoaderWrapper>
+          <PropagateLoader
+            color="#7ECDFF"
+            cssOverride={{
+              transform: "scale(2)",
+            }}
+          />
+        </LoaderWrapper>
+        <Cat src={Cat1} alt="Loading cat" />
+      </Container2>
+
   );
 
   return (
@@ -318,23 +319,35 @@ background-color: #79c7ff;
 `;
 
 const Container2 = styled.div`
-margin-top: 70%;
-	height: 550px;
-	width: 900px;
-	max-height: 1000px;
-	max-width: 1200px;
-	margin-left: 10%;
-	margin-right: 10%;
-	/* border: 2px solid #e5e5e5; */
-	border-radius: 20px;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 550px;
+  width: 900px;
+  max-height: 1000px;
+  max-width: 1200px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: white; // 배경색 추가
+  z-index: 1000; // 다른 요소들 위에 표시
+`;
+
+const LoaderWrapper = styled.div`
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 `;
 
 const Cat = styled.img`
-	margin-left: 10%;
-	margin-top: 6%;
-	width: 200px;
-	height: 200px;
+  position: absolute;
+  top: 70%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 200px;
+  height: 200px;
 `;
