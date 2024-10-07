@@ -124,14 +124,14 @@ const BoxImg = styled.img`
 `;
 
 const Text = styled.div`
-  padding: 0px 30px 0px 5px; // 상단 패딩을 줄임
+  padding: 5px 30px 0px 5px; // 상단 패딩을 줄임
   width: 140px;
   height: 29px;
   flex-shrink: 0;
   color: #323232;
   text-align: center;
   font-family: Inter;
-  font-size: 25px;
+  font-size: 20px;
   font-family: 'NanumSquareNeo', sans-serif;
   font-weight: 500;
   line-height: normal;

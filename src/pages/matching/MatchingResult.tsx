@@ -15,7 +15,7 @@ const MatchingResult: React.FC = () => {
     return (
         <Container>
             <Container2>
-                    <h1>결과 화면은 아직 만들고 있지롱</h1>
+                    <h1>결과 화면 제작중</h1>
             </Container2>
         </Container>
     );

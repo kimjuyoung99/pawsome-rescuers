@@ -44,11 +44,11 @@ const GlobalStyle = createGlobalStyle`
   }
 
   body, button, input, select, textarea {
-    font-family: 'NanumSquareNeo', sans-serif;
+    font-family: 'NanumSquareNeo', sans-serif !important;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'NanumSquareNeo', sans-serif;
+    font-family: 'NanumSquareNeo', sans-serif !important;
     font-weight: 700;
   }
 
@@ -133,7 +133,7 @@ export const Text1 = styled.div`
     width: 100%;
     max-width: 638px;
     color: #323232;
-    font-family: 'NanumSquareNeo', sans-serif;
+    font-family: 'NanumSquareNeo', sans-serif !important;
     font-size: 26px;
     font-weight: 700;
     line-height: 150%;

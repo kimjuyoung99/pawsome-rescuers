@@ -93,7 +93,7 @@ flex-shrink: 0;
 color: #323232;
 text-align: center;
 font-family: Inter;
-font-size: 30px;
+font-size: 25px;
 font-family: 'NanumSquareNeo', sans-serif;
 font-weight: 500;
 line-height: normal;

@@ -311,8 +311,8 @@ const FilterBox = styled.div`
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	padding: 3px 10px 0 10px;
-	font-size: 14px;
+	padding: 3px 10px 2px 10px;
+	font-size: 13px;
 	color: #333;
 	cursor: pointer;
 	box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
