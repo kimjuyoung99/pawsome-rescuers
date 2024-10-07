@@ -126,6 +126,7 @@ const DetailPage: React.FC = () => {
                 style={{ width: "100%", height: "400px",borderRadius: "40px",border: "2px solid #e0e0e0"
               }}
 							level={3}
+              
 						/>
 					</MapContainer>
 				</Section2>
