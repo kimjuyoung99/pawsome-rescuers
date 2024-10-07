@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { fetchAnimalData, AnimalData } from "../services/api"; // API 함수와 타입 import
@@ -20,6 +20,18 @@ import { Text1 } from "../GlobalStyles";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
+//fade 효과
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
+
 
 const MainPage: React.FC = () => {
 	const navigate = useNavigate();
@@ -219,10 +231,11 @@ const ContentWrapper = styled.div`
 `;
 
 const TextContent = styled.div`
-	flex: 1;
-	padding-left: 80px;
-	max-width: 60%; // 텍스트 영역의 최대 너비 제한
-	margin-top: -100px;
+  flex: 1;
+  padding-left: 80px;
+  max-width: 60%;
+  margin-top: -100px;
+  animation: ${fadeIn} 1s ease-out;
 `;
 
 // Title: 메인 제목을 스타일링합니다.
@@ -270,6 +283,9 @@ const Button = styled.button`
 	letter-spacing: -1.44px;
 	box-shadow: 0px 6px 6px rgba(0, 0, 0, 0.2); //그림자
 	transition: all 0.3s ease;
+
+	animation: ${fadeIn}1.2s ease-out;
+
 	// 옵션: 포커스 시 나타나는 기본 아웃라인도 제거하고 싶다면 추가
 	&:focus {
 		outline: none;
@@ -297,19 +313,20 @@ const PawIcon = styled.span`
 
 // AnimalsContainer: 동물 이미지들을 감싸는 컨테이너입니다.
 const AnimalsContainer = styled.div`
-	flex: 1;
-	display: flex;
-	justify-content: flex-start;
-	align-items: center;
-	/* padding-top: 100px; */
-	max-width: 40%; // 이미지 영역의 최대 너비 제한
-	padding-right: 5%;
-	img {
-		width: 85%;
-		max-width: 500px; // 이미지 최대 너비 조정
-		height: auto;
-		object-fit: contain;
-	}
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  max-width: 40%;
+  padding-right: 5%;
+  animation: ${fadeIn} 1s ease-out 1s both;
+  
+  img {
+    width: 85%;
+    max-width: 500px;
+    height: auto;
+    object-fit: contain;
+  }
 `;
 
 const UrgentAnimalContainer = styled.div`
