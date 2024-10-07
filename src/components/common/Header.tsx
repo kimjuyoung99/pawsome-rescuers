@@ -55,9 +55,9 @@ const HeadreBar = styled.div`
 
 const HeadreMenu = styled.div`
     color: #323232;
-    font-family: "Noto Sans";
+    font-family: "NanumSquareNeo";
     font-size: 18px;
-    font-style: normal;
+    font-family: 'NanumSquareNeo', sans-serif;
     font-weight: 400;
     line-height: 21px; 
     letter-spacing: -0.5px;

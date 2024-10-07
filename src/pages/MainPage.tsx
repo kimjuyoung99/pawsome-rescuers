@@ -23,7 +23,6 @@ import "swiper/css/navigation";
 
 const MainPage: React.FC = () => {
 	const navigate = useNavigate();
-	const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [animalData, setAnimalData] = useState<AnimalData[]>([]);
 	const [totalCount, setTotalCount] = useState(0); // 전체 데이터 개수를 저장할 상태
@@ -84,15 +83,8 @@ const MainPage: React.FC = () => {
 		const fiveDaysLater = new Date(today.getTime() + 2 * 24 * 60 * 60 * 1000);
 		fiveDaysLater.setHours(23, 59, 59, 999); // 시간을 23:59:59.999로 설정
 
-		// console.log("오늘 날짜:", today);
-		// console.log("5일 후 날짜:", fiveDaysLater);
-		// console.log("총 필터링 동물 수 :", animals.length);
-
 		const filteredAnimals = animals.filter((animal) => {
 			const endDate = parseDate(animal.PBLANC_END_DE);
-			// console.log("Animal ID:", animal.ABDM_IDNTFY_NO);
-			// console.log("공고 마감 날짜 : ", animal.PBLANC_END_DE);
-			// console.log("내가 정한 마감 날짜 :", endDate);
 			const isUrgent = endDate >= today && endDate <= fiveDaysLater;
 			console.log("Is urgent:", isUrgent);
 			return isUrgent;
@@ -235,12 +227,11 @@ const TextContent = styled.div`
 
 // Title: 메인 제목을 스타일링합니다.
 const Title = styled.h1`
-	color: #323232;
-	font-size: 42px;
-	font-family: NanumSquare Neo OTF;
-	font-weight: 500;
-	word-wrap: break-word;
-	line-height: 1.2; // 줄 간격 조정
+  color: #323232;
+  font-size: 42px;
+  font-weight: 500;
+  word-wrap: break-word;
+  line-height: 1.2;
 `;
 
 const BlueTitle = styled.span`
@@ -252,12 +243,11 @@ const LineBreak = styled.br``;
 
 // Subtitle: 부제목을 스타일링합니다.
 const Subtitle = styled.p`
-	color: #575757;
-	font-size: 18px;
-	font-family: Noto Sans;
-	font-weight: 400;
-	line-height: 25px;
-	word-wrap: break-word;
+  color: #575757;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 25px;
+  word-wrap: break-word;
 `;
 
 // Button: "나의 반려동물 찾기" 버튼을 스타일링합니다.
@@ -272,12 +262,10 @@ const Button = styled.button`
 	border-radius: 999px;
 	background: #008bf0;
 	border: none; // 테두리 제거
-
 	color: #fff;
-	font-family: "Noto Sans";
 	font-size: 22px;
-	font-style: normal;
-	font-weight: 600;
+  	font-weight: 600;
+
 	line-height: normal;
 	letter-spacing: -1.44px;
 	box-shadow: 0px 6px 6px rgba(0, 0, 0, 0.2); //그림자

@@ -120,7 +120,7 @@ color: #323232;
 text-align: center;
 font-family: Inter;
 font-size: 28px;
-font-style: normal;
+font-family: 'NanumSquareNeo', sans-serif;
 font-weight: 500;
 line-height: normal;
 `;
@@ -129,9 +129,8 @@ width: 761px;
 height: 105px;
 color: #323232;
 text-align: center;
-font-family: "Noto Sans";
 font-size: 30px;
-font-style: normal;
+font-family: 'NanumSquareNeo', sans-serif;
 font-weight: 700;
 margin-top: 20px;
 line-height: 42px; /* 107.692% */
@@ -172,9 +171,9 @@ const NextBtn = styled.button`
 	border: none; // 테두리 제거
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);//그림자
 	color: #fff;
-	font-family: "Noto Sans";
+	font-family: "NanumSquareNeo";
 	font-size: 20px;
-	font-style: normal;
+	font-family: 'NanumSquareNeo', sans-serif;
 	font-weight: 600;
 	line-height: normal;
 	letter-spacing: -1.44px;

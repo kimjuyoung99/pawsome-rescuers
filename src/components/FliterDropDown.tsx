@@ -54,7 +54,7 @@ const StyledBox = styled.div`
 
   .option {
     padding: 8px 16px;
-    font-family: "Noto Sans", sans-serif;
+    font-family: "NanumSquareNeo", sans-serif;
     font-size: 14px;
     color: #333;
     cursor: pointer;

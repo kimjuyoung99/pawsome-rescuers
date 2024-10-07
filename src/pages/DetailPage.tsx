@@ -186,9 +186,9 @@ const ScrapImage = styled.img`
 const AnnouncementNumber = styled.div`
   display: flex;
   color: #323232;
-  font-family: "Noto Sans";
+  font-family: "NanumSquareNeo";
   font-size: 30px;
-  font-style: normal;
+  font-family: 'NanumSquareNeo', sans-serif;
   font-weight: 700;
   line-height: 150%;
   letter-spacing: -1.5px;
@@ -293,9 +293,9 @@ const SectorName = styled.div`
 width: 638px;
 height: 56px;
 color: #109AFF;
-font-family: "Noto Sans";
+font-family: "NanumSquareNeo";
 font-size: 25px;
-font-style: normal;
+font-family: 'NanumSquareNeo', sans-serif;
 font-weight: 700;
 line-height: 150%; /* 37.5px */
 letter-spacing: -1.25px;

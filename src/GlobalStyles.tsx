@@ -2,24 +2,61 @@ import { createGlobalStyle, css } from 'styled-components';
 import styled from 'styled-components';
 
 const GlobalStyle = createGlobalStyle`
-  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700&display=swap');
-  @import url('https://cdn.jsdelivr.net/gh/moonspam/NanumSquare@2.0/nanumsquare.css');
+
+  @font-face {
+    font-family: 'NanumSquareNeo';
+    src: url('/fonts/NanumSquareNeoOTF-Lt.woff2') format('woff2'),
+         url('/fonts/NanumSquareNeoOTF-Lt.woff') format('woff');
+    font-weight: 300;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'NanumSquareNeo';
+    src: url('/fonts/NanumSquareNeoOTF-Rg.woff2') format('woff2'),
+         url('/fonts/NanumSquareNeoOTF-Rg.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'NanumSquareNeo';
+    src: url('/fonts/NanumSquareNeoOTF-Bd.woff2') format('woff2'),
+         url('/fonts/NanumSquareNeoOTF-Bd.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'NanumSquareNeo';
+    src: url('/fonts/NanumSquareNeoOTF-Eb.woff2') format('woff2'),
+         url('/fonts/NanumSquareNeoOTF-Eb.woff') format('woff');
+    font-weight: 600;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'NanumSquareNeo';
+    src: url('/fonts/NanumSquareNeoOTF-Hv.woff2') format('woff2'),
+         url('/fonts/NanumSquareNeoOTF-Hv.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+  }
+
+  body, button, input, select, textarea {
+    font-family: 'NanumSquareNeo', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'NanumSquareNeo', sans-serif;
+    font-weight: 700;
+  }
+
 
   * {
     box-sizing: border-box;
   }
 
-  body {
-    font-family: 'Noto Sans', sans-serif;
-    background-color: #ffffff;
-    color: #323232;
-    line-height: 1.5;
-  }
-
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'NanumSquare', sans-serif;
-    font-weight: 700;
-  }
 
   a {
     text-decoration: none;
@@ -96,9 +133,8 @@ export const Text1 = styled.div`
     width: 100%;
     max-width: 638px;
     color: #323232;
-    font-family: "Noto Sans", sans-serif;
+    font-family: 'NanumSquareNeo', sans-serif;
     font-size: 26px;
-    font-style: normal;
     font-weight: 700;
     line-height: 150%;
     letter-spacing: -1.55px;

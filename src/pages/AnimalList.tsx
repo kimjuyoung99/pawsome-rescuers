@@ -189,7 +189,7 @@ const AnimalList: React.FC = () => {
 
 	return (
 		<Container>
-			<Text1>공고기한이 이틀 남은 친구들이에요!</Text1>
+			<Text1>공고기한이 얼마 남지 않은 친구들이에요!</Text1>
 			<UrgentAnimalContainer>
 				{urgentAnimals.length > 0 ? (
 					<Swiper

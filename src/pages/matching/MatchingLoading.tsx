@@ -54,9 +54,9 @@ const Explanation = styled.div`
 	height: 105px;
 	color: #323232;
 	text-align: center;
-	font-family: "Noto Sans";
+	font-family: "NanumSquareNeo";
 	font-size: 35px;
-	font-style: normal;
+	font-family: 'NanumSquareNeo', sans-serif;
 	font-weight: 700;
 	margin-top: 20px;
 	line-height: 42px;
