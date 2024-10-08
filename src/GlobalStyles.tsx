@@ -43,7 +43,7 @@ const GlobalStyle = createGlobalStyle`
     font-style: normal;
   }
 
-  body, button, input, select, textarea {
+  body, button, input, select, textarea, div {
     font-family: 'NanumSquareNeo', sans-serif !important;
   }
 

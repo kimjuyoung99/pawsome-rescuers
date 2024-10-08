@@ -286,7 +286,6 @@ const Button = styled.button`
 
 	animation: ${fadeIn}1.2s ease-out;
 
-	// 옵션: 포커스 시 나타나는 기본 아웃라인도 제거하고 싶다면 추가
 	&:focus {
 		outline: none;
 	}
