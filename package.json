@@ -24,11 +24,15 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-kakao-maps-sdk": "^1.1.27",
+    "react-query": "^3.39.3",
     "react-router-dom": "^6.26.2",
     "react-spinners": "^0.14.1",
     "styled-components": "^6.1.13",
     "swiper": "^11.1.14",
     "typescript": "^5.5.4",
     "vite": "^5.4.0"
+  },
+  "devDependencies": {
+    "@types/react-query": "^1.2.9"
   }
 }
