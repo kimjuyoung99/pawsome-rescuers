@@ -2,18 +2,19 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Container } from "../../GlobalStyles";
-import ProgressBar from "../../components/ProgressBar";
+import ProgressBar, { useProgress } from "../../components/ProgressBar";
 import Paw from "../../assets/images/pow.svg";
 import Dog from "../../assets/images/matching_images/Dog.svg"
 import Cat from "../../assets/images/matching_images/Cat.svg"
 import Rabbit from "../../assets/images/matching_images/Rabbit.svg"
 
+
 const Matching_1: React.FC = () => {
-    const [currentQuestion, setCurrentQuestion] = useState(1);
-    const totalQuestions = 4;
+    const { currentPage, setCurrentPage } = useProgress();
     const navigate = useNavigate();
 
     const handleNextStep = () => {
+        setCurrentPage(currentPage + 1);
         navigate("/matching/test2");
     }
 
@@ -21,7 +22,7 @@ const Matching_1: React.FC = () => {
         <Container>
             <Container2>
                 <ProgressBarWrapper>
-                    <ProgressBar currentStep={currentQuestion} totalSteps={totalQuestions}/>
+                <ProgressBar currentPage={1} totalPages={4} />
                 </ProgressBarWrapper>
                 <Explanation>
                 꿈에서 나에게 어떤 동물이 달려온다!<br/> 이 동물은 무엇일까?

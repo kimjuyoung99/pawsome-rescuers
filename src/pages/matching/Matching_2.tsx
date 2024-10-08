@@ -2,17 +2,19 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Container } from "../../GlobalStyles";
-import ProgressBar from "../../components/ProgressBar";
+import ProgressBar, { useProgress } from "../../components/ProgressBar";
 import Paw from "../../assets/images/pow.svg";
 import Gold from "../../assets/images/matching_images/Gold.svg";
 import Diamond from "../../assets/images/matching_images/Diamond.svg";
 
+
 const Matching_2: React.FC = () => {
-    const [currentQuestion, setCurrentQuestion] = useState(1);
+    const { currentPage, setCurrentPage } = useProgress();
     const totalQuestions = 4;
     const navigate = useNavigate();
 
     const handleNextStep = () => {
+        setCurrentPage(currentPage + 1);
         navigate("/matching/test3");
     }
 
@@ -20,8 +22,7 @@ const Matching_2: React.FC = () => {
         <Container>
             <Container2>
                 <ProgressBarWrapper>
-                    <ProgressBar currentStep={currentQuestion} totalSteps={totalQuestions}/>
-                </ProgressBarWrapper>
+                <ProgressBar currentPage={2} totalPages={4} />                </ProgressBarWrapper>
                 <Explanation>
                 백만장자에게 금고를 선물 받았다.
                 <br/>금고 안에 어떤게 한가득 쌓여 있을까?

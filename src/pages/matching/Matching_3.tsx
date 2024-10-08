@@ -2,19 +2,21 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Container } from "../../GlobalStyles";
-import ProgressBar from "../../components/ProgressBar";
 import Paw from "../../assets/images/pow.svg";
 import Key from "../../assets/images/matching_images/Key.svg";
 import Carria from "../../assets/images/matching_images/Carria.svg";
 import Car from "../../assets/images/matching_images/Car.svg";
 import House from "../../assets/images/matching_images/House.svg";
+import ProgressBar, { useProgress } from "../../components/ProgressBar";
+
 
 const Matching_3: React.FC = () => {
-    const [currentQuestion, setCurrentQuestion] = useState(1);
+    const { currentPage, setCurrentPage } = useProgress();
     const totalQuestions = 4;
     const navigate = useNavigate();
 
     const handleNextStep = () => {
+        setCurrentPage(currentPage + 1);
         navigate("/matching/test4");
     }
 
@@ -22,7 +24,7 @@ const Matching_3: React.FC = () => {
         <Container>
             <Container2>
                 <ProgressBarWrapper>
-                    <ProgressBar currentStep={currentQuestion} totalSteps={totalQuestions}/>
+                <ProgressBar currentPage={3} totalPages={4} />
                 </ProgressBarWrapper>
                 <Explanation>
                 꿈 속에서 이상한 나라로 가는 문이 눈 앞에 있다.

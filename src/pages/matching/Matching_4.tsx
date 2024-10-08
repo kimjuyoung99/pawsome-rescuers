@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Container } from "../../GlobalStyles";
-import ProgressBar from "../../components/ProgressBar";
 import Paw from "../../assets/images/pow.svg";
 import W from "../../assets/images/matching_images/White.svg";
 import BL from "../../assets/images/matching_images/Black.svg";
@@ -12,11 +11,10 @@ import C from "../../assets/images/matching_images/Cheese.svg";
 import Three from "../../assets/images/matching_images/TreeColor.svg";
 import M from "../../assets/images/matching_images/Mackerel.svg";
 import BW from "../../assets/images/matching_images/BlackWhite.svg";
-
+import ProgressBar, { useProgress } from "../../components/ProgressBar";
 
 const Matching_4: React.FC = () => {
-    const [currentQuestion, setCurrentQuestion] = useState(1);
-    const totalQuestions = 4;
+    const { currentPage, setCurrentPage } = useProgress();
     const navigate = useNavigate();
 
     const handleNextStep = () => {
@@ -27,7 +25,7 @@ const Matching_4: React.FC = () => {
         <Container>
             <Container2>
                 <ProgressBarWrapper>
-                    <ProgressBar currentStep={currentQuestion} totalSteps={totalQuestions}/>
+                <ProgressBar currentPage={4} totalPages={4} />
                 </ProgressBarWrapper>
                 <Explanation>
                 나를 위한 티셔츠를 고르고 있다.<br/>
