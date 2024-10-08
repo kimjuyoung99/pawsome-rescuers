@@ -128,7 +128,7 @@ const AnimalList: React.FC = () => {
 		const today = new Date();
 		today.setHours(0, 0, 0, 0); // 시간을 00:00:00으로 설정
 		//fivedays 이지만.. 실제 수정은 3일 마감으로 설정
-		const fiveDaysLater = new Date(today.getTime() + 2 * 24 * 60 * 60 * 1000);
+		const fiveDaysLater = new Date(today.getTime() + 1 * 24 * 60 * 60 * 1000);
 		fiveDaysLater.setHours(23, 59, 59, 999); // 시간을 23:59:59.999로 설정
 
 		// console.log("오늘 날짜:", today);
