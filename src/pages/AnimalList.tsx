@@ -11,7 +11,7 @@ import styled from "styled-components";
 import AnimalDataBox from "../components/DataBox"; // 새로운 컴포넌트 import
 import FliterDropDown from "../components/FliterDropDown";
 import { Link } from "react-router-dom";
-import { fetchAnimalData, AnimalData } from "../services/api"; // API 함수와 타입 import
+import { fetchAnimalData, fetchAnimalDataPaginated, AnimalData  } from "../services/api"; // API 함수와 타입 import
 import { Swiper, SwiperSlide } from "swiper/react";
 import { PropagateLoader } from "react-spinners";
 import {
@@ -78,41 +78,55 @@ const AnimalList: React.FC = () => {
 	const itemsPerPage = 15;
 
 	useEffect(() => {
+	const loadPagedAnimals = async () => {
+		try {
+		const result = await fetchAnimalDataPaginated(currentPage, itemsPerPage);
+		setAnimalData(result.data);
+		setTotalCount(result.totalCount);
+		} catch (error) {
+		console.error("Failed to fetch paged animal data:", error);
+		}
+	};
+
+	loadPagedAnimals();
+	}, [currentPage, itemsPerPage]);
+
+useEffect(() => {
 		const loadAllAnimals = async () => {
-			try {
-				const allAnimals = await fetchAllAnimalData();
-				const filteredUrgentAnimals = getFilteredUrgentAnimals(allAnimals);
-				setUrgentAnimals(filteredUrgentAnimals);
-			} catch (error) {
-				console.error("Failed to fetch all animal data:", error);
-			}
+		try {
+			const allAnimals = await fetchAllAnimalData();
+			const filteredUrgentAnimals = getFilteredUrgentAnimals(allAnimals);
+			setUrgentAnimals(filteredUrgentAnimals);
+		} catch (error) {
+			console.error("Failed to fetch all animal data:", error);
+		}
 		};
 
 		loadAllAnimals();
-	}, []); // 컴포넌트 마운트 시 한 번만 실행
+	}, []);
 
 	useEffect(() => {
 		const loadPagedAnimals = async () => {
-			try {
-				const result = await fetchAnimalData(currentPage, itemsPerPage);
-				setAnimalData(result.data);
-				setTotalCount(result.totalCount);
-			} catch (error) {
-				console.error("Failed to fetch paged animal data:", error);
-			}
+		try {
+			const result = await fetchAnimalDataPaginated(currentPage, itemsPerPage);
+			setAnimalData(result.data);
+			setTotalCount(result.totalCount);
+		} catch (error) {
+			console.error("Failed to fetch paged animal data:", error);
+		}
 		};
 
 		loadPagedAnimals();
-	}, [currentPage]);
+	}, [currentPage, itemsPerPage]);
 
-	// 전체 데이터를 가져오는 함수 (공고 종료 날짜 필터링 하기 위해)
+	// fetchAllAnimalData 함수 수정
 	const fetchAllAnimalData = async () => {
 		try {
-			const allData = await fetchAnimalData(1, 1000); // 매우 큰 숫자로 모든 데이터 요청
-			return allData.data;
+		const result = await fetchAnimalData();
+		return result.data;
 		} catch (error) {
-			console.error("Failed to fetch all animal data:", error);
-			return [];
+		console.error("Failed to fetch all animal data:", error);
+		return [];
 		}
 	};
 

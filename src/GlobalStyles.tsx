@@ -90,7 +90,7 @@ export const Container = styled.div`
     padding: 20px;
     max-width: 1200px;
     margin: 10px 10px 10px 120px;
-    border: solid #a7e9ff 2px;
+    /* border: solid #a7e9ff 2px; */
 `;
 
 export const Arrow = styled.div`

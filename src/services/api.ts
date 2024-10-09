@@ -129,4 +129,37 @@ export const fetchAnimalData = async (): Promise<{ data: AnimalData[], totalCoun
         console.error('Error fetching animal data:', error);
         throw error;
     }
-}
+};
+
+// 새로운 함수: 페이지네이션을 지원하는 fetchAnimalDataPaginated
+export const fetchAnimalDataPaginated = async (page: number = 1, itemsPerPage: number = 15): Promise<{ data: AnimalData[], totalCount: number }> => {
+    console.log('API_KEY:', API_KEY);
+
+    try {
+        if (!API_KEY) {
+            throw new Error('API key is not defined. Please check your environment variables.');
+        }
+
+        const response = await axios.get(BASE_URL, {
+            params: {
+                Key: API_KEY,
+                Type: 'json',
+                pIndex: page,
+                pSize: itemsPerPage,
+            }
+        });
+
+        if (response.data && response.data.AbdmAnimalProtect && response.data.AbdmAnimalProtect[1]) {
+            const animalData = response.data.AbdmAnimalProtect[1].row;
+            const totalCount = response.data.AbdmAnimalProtect[0].head[0].list_total_count;
+            
+            return { data: animalData, totalCount };
+        } else {
+            console.error('Unexpected API response structure:', response.data);
+            return { data: [], totalCount: 0 };
+        }
+    } catch (error) {
+        console.error('Error fetching animal data:', error);
+        throw error;
+    }
+};

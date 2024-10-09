@@ -5,6 +5,7 @@ export interface RawAnimalData {
   BDWGH_INFO: string;
   AGE_INFO?: string;
   COLOR_NM?: string; 
+  ABDM_IDNTFY_NO: string;
 }
 
 export type ColorCategory = 'White' | 'BlackWhite' | 'ThreeColor' | 'Mackerel' | 'Black' | 'Gold' | 'Brown' | 'Gray' | 'Unknown';
@@ -19,6 +20,7 @@ export interface TransformedAnimalData {
   IMAGE_COURS?: string;
   colorCategories: ColorCategory[]; 
   COLOR_NM?: string; 
+  ABDM_IDNTFY_NO: string;
 }
 
 const colorMap: Record<Exclude<ColorCategory, 'Unknown'>, string[]> = {
@@ -70,6 +72,7 @@ export function transformAnimalData(rawData: RawAnimalData): TransformedAnimalDa
     age: rawData.AGE_INFO,
     colorCategories: rawData.COLOR_NM ? getColorCategories(rawData.COLOR_NM) : ['Unknown'],
     COLOR_NM: rawData.COLOR_NM, // 원본 색상 데이터 유지
+    ABDM_IDNTFY_NO: rawData.ABDM_IDNTFY_NO,
   };
 }
 
