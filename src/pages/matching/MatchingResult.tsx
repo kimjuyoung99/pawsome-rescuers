@@ -8,37 +8,54 @@ import { fetchAnimalData, AnimalData } from "../../services/api";
 import {
 	transformAnimalData,
 	TransformedAnimalData,
+	ColorCategory
 } from "../matching/matchingAlgorithms/Matching_AtherOption";
 
+const colorMap: Record<Exclude<ColorCategory, 'Unknown'>, string[]> = {
+  White: ['아이보리', '크림', '백색', '백', '흰색', '흰'],
+  BlackWhite: ['검백색', '얼룩', '검/흰', '검.백', '검정흰색', '검줄/흰', '백흑색'],
+  ThreeColor: ['삼색', '백흑갈색'],
+  Mackerel: ['고등어', '반점무늬', '고등어태비'],
+  Black: ['흑색', '흑갈', '검정', '회흑', '흑', '블랙탄'],
+  Gold: ['노랑색', '황색', '크림색', '치즈색', '치즈', '황갈색'],
+  Brown: ['베이지색', '흑갈', '초코', '초코색', '갈', '흑갈색', '연갈색', '갈백'],
+  Gray: ['회백색', '쥐색', '검정회색']
+};
+
 const MatchingResult: React.FC = () => {
-	const [matchingAnimals, setMatchingAnimals] = useState<
-		TransformedAnimalData[]
-	>([]);
+	const [matchingAnimals, setMatchingAnimals] = useState<TransformedAnimalData[]>([]);
 	const navigate = useNavigate();
 
-	//**
 	useEffect(() => {
 		const species = localStorage.getItem('species');
 		const sex = localStorage.getItem('sex');
 		const weight = localStorage.getItem('weight');
-		console.log('LocalStorage values in MatchingResult:', { species, sex, weight });
+		const colors = JSON.parse(localStorage.getItem('colors') || '[]') as ColorCategory[];
+		console.log('LocalStorage values in MatchingResult:', { species, sex, weight, colors });
 	
 		const fetchData = async () => {
 			try {
 				const { data, totalCount } = await fetchAnimalData();
 				console.log(`Total data count: ${totalCount}`);
-				const transformedData: TransformedAnimalData[] =
-					data.map(transformAnimalData);
-					const filteredData = transformedData.filter(animal => {
-						const speciesMatch = animal.species === species;
-						const sexMatch = animal.sex === sex;
-						const weightMatch = animal.weightCategory === weight;
-						
-						// console.log(`Animal: ${animal.SPECIES_NM}, Species: ${animal.species}, Sex: ${animal.sex}, Weight: ${animal.weightCategory}`);
-						// console.log(`Matches: Species: ${speciesMatch}, Sex: ${sexMatch}, Weight: ${weightMatch}`);
-						
-						return speciesMatch && sexMatch && weightMatch;
-					});
+				const transformedData: TransformedAnimalData[] = data.map(transformAnimalData);
+				const filteredData = transformedData.filter(animal => {
+					const speciesMatch = animal.species === species;
+					const sexMatch = animal.sex === sex;
+					const weightMatch = animal.weightCategory === weight;
+					
+					// Color matching logic
+					const colorMatch = colors.some(selectedColor => 
+						animal.colorCategories.includes(selectedColor) ||
+						(animal.COLOR_NM && colorMap[selectedColor as keyof typeof colorMap]?.some(keyword => 
+							animal.COLOR_NM?.includes(keyword)
+						))
+					);
+					
+					console.log(`Animal: ${animal.SPECIES_NM}, Species: ${animal.species}, Sex: ${animal.sex}, Weight: ${animal.weightCategory}, Color: ${animal.COLOR_NM}`);
+					console.log(`Matches: Species: ${speciesMatch}, Sex: ${sexMatch}, Weight: ${weightMatch}, Color: ${colorMatch}`);
+					
+					return speciesMatch && sexMatch && weightMatch && colorMatch;
+				});
 
 				setMatchingAnimals(filteredData.slice(0, 3)); // 최대 3개의 결과만 표시
 				console.log("Filtered animals:", filteredData);

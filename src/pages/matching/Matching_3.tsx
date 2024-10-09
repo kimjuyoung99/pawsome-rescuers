@@ -30,7 +30,7 @@ const Matching_3: React.FC = () => {
     const handleNextStep = () => {
         if(selectedOption){
             setCurrentPage(currentPage + 1);
-            navigate("/matching/result");
+            navigate("/matching/test4");
         } else {
             alert("옵션을 선택해 주세요~");
         }

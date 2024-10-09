@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Container } from "../../GlobalStyles";
@@ -12,66 +12,116 @@ import Three from "../../assets/images/matching_images/TreeColor.svg";
 import M from "../../assets/images/matching_images/Mackerel.svg";
 import BW from "../../assets/images/matching_images/BlackWhite.svg";
 import ProgressBar, { useProgress } from "../../components/ProgressBar";
+import { ColorCategory } from "../matching/matchingAlgorithms/Matching_AtherOption";
+
+interface ChoiceBoxProps {
+    selected: boolean;
+    onClick: () => void;
+}
 
 const Matching_4: React.FC = () => {
     const { currentPage, setCurrentPage } = useProgress();
     const navigate = useNavigate();
+    const [species, setSpecies] = useState<string | null>(null);
+    const [selectedColors, setSelectedColors] = useState<ColorCategory[]>([]);
+
+    useEffect(() => {
+        const storedSpecies = localStorage.getItem('species');
+        setSpecies(storedSpecies);
+        console.log("Current localStorage state:", {
+            species: storedSpecies,
+            sex: localStorage.getItem('sex'),
+            weight: localStorage.getItem('weight')
+        });
+    }, []);
+
+    const handleColorSelection = (color: ColorCategory) => {
+        setSelectedColors(prevColors => {
+            if (prevColors.includes(color)) {
+                return prevColors.filter(c => c !== color);
+            } else {
+                return [...prevColors, color];
+            }
+        });
+    };
 
     const handleNextStep = () => {
-        navigate("/matching/loading");
-    }
+        if (selectedColors.length >= 3) {
+            localStorage.setItem('colors', JSON.stringify(selectedColors));
+            navigate("/matching/loading");
+        } else {
+            alert("3개 이상의 색상을 선택해주세요.");
+        }
+    };
+
+    const renderChoiceBox = (color: ColorCategory, image: string, text: string) => (
+        <ChoiceBox 
+            selected={selectedColors.includes(color)} 
+            onClick={() => handleColorSelection(color)}
+        >
+            <BoxImg src={image} alt={text} />
+            <Text>{text}</Text>
+        </ChoiceBox>
+    );
+
+    const renderChoiceContainer = () => {
+        if(species === 'Cat'){
+            return (
+                <ChoiceContainer>
+                    <A>
+                        {renderChoiceBox('White', W, '흰색')}
+                        {renderChoiceBox('Black', BL, '검은색')}
+                        {renderChoiceBox('Gray', G, '회색')}
+                        {renderChoiceBox('ThreeColor', Three, '삼색')}
+                    </A>
+                    <B>
+                        {renderChoiceBox('Gold', C, '금색')}
+                        {renderChoiceBox('Brown', Br, '갈색')}
+                        {renderChoiceBox('BlackWhite', BW, '흑백')}
+                        {renderChoiceBox('Mackerel', M, '고등어')}
+                    </B>
+                </ChoiceContainer>
+            );
+        } else {
+            return (
+                <ChoiceContainer>
+                    <A>
+                        {renderChoiceBox('White', W, '흰색')}
+                        {renderChoiceBox('Black', BL, '검은색')}
+                        {renderChoiceBox('Gray', G, '회색')}
+                    </A>
+                    <B>
+                        {renderChoiceBox('Gold', C, '금색')}
+                        {renderChoiceBox('Brown', Br, '갈색')}
+                        {renderChoiceBox('BlackWhite', BW, '흑백')}
+                    </B>
+                </ChoiceContainer>
+            );
+        }
+    };
 
     return (
         <Container>
             <Container2>
                 <ProgressBarWrapper>
-                <ProgressBar currentPage={4} totalPages={4} />
+                    <ProgressBar currentPage={4} totalPages={4} />
                 </ProgressBarWrapper>
                 <Explanation>
-                나를 위한 티셔츠를 고르고 있다.<br/>
-                어떤 색깔이 좋을까? 3개 이상 골라보자!
+                    나를 위한 티셔츠를 고르고 있다.<br/>
+                    어떤 색깔이 좋을까? 3개 이상 골라보자!
                 </Explanation>
-
-                <ChoiceContainer>
-                    <A>
-                        <ChoiceBox>
-                            <BoxImg src={W}></BoxImg>
-                            <Text>흰색</Text>
-                        </ChoiceBox>
-                        <ChoiceBox>
-                            <BoxImg src={BL}></BoxImg>
-                            <Text>검은색</Text>
-                        </ChoiceBox>
-                        <ChoiceBox>
-                            <BoxImg src={G}></BoxImg>
-                            <Text>회색</Text>
-                        </ChoiceBox>
-                    </A>
-                    <B>
-                <ChoiceBox>
-                    <BoxImg src={C}></BoxImg>
-                            <Text>금색</Text>
-                        </ChoiceBox>
-                        <ChoiceBox>
-                            <BoxImg src={Br}></BoxImg>
-                            <Text>갈색</Text>
-                        </ChoiceBox>
-                        <ChoiceBox>
-                        <BoxImg src={BW}></BoxImg>
-                            <Text>흑백</Text>
-                        </ChoiceBox>
-                    </B>
-                </ChoiceContainer>
-				<NextBtn onClick={handleNextStep}>
+                {renderChoiceContainer()}
+                <NextBtn onClick={handleNextStep}>
                     다음
-					<PawIcon>
-						<img src={Paw} />
-					</PawIcon>
-				</NextBtn>
+                    <PawIcon>
+                        <img src={Paw} alt="Paw icon" />
+                    </PawIcon>
+                </NextBtn>
             </Container2>
         </Container>
     );
 };
+
 export default Matching_4;
 
 const A = styled.div`
@@ -91,27 +141,27 @@ const ChoiceContainer = styled.div`
   align-items: center;
   width: 100%;
 `;
-const ChoiceBox = styled.div`
-width: 120px;
-height: 120px;
-/* display: flex; */
-flex-shrink: 0;
-border-radius: 40px;
-border: 4px solid #E5E5E5;
-margin: 10px 10px 5px 10px; // 상하좌우 여백을 동일하게 설정
-background: var(--Schemes-On-Primary, #FFF);
-transition: all 0.3s ease;
-	// 옵션: 포커스 시 나타나는 기본 아웃라인도 제거하고 싶다면 추가
-	&:focus {
-		outline: none;
-	}
+const ChoiceBox = styled.div<ChoiceBoxProps>`
+    width: 120px;
+    height: 120px;
+    flex-shrink: 0;
+    border-radius: 40px;
+    border: 4px solid ${props => props.selected ? '#008bf0' : '#E5E5E5'};
+    margin: 10px 10px 5px 10px;
+    background: ${props => props.selected ? '#e5e5e5' : 'var(--Schemes-On-Primary, #FFF)'};
+    transition: all 0.3s ease;
+    cursor: pointer;
+
+    &:focus {
+        outline: none;
+    }
     &:hover {
-  background: #e5e5e5;
-  box-shadow: 0px 6px 7px rgba(0, 0, 0, 0.2);
+        background: #e5e5e5;
+        box-shadow: 0px 6px 7px rgba(0, 0, 0, 0.2);
     }
     &:active {
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-  transform: translateY(2px);
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+        transform: translateY(2px);
     }
 `;
 const BoxImg = styled.img`
@@ -214,43 +264,3 @@ const PawIcon = styled.span`
 		object-fit: contain;
 	}
 `;
-
-
-{/* <ChoiceContainer>
-<A>
-    <ChoiceBox>
-        <BoxImg src={W}></BoxImg>
-        <Text>흰색</Text>
-    </ChoiceBox>
-    <ChoiceBox>
-        <BoxImg src={BL}></BoxImg>
-        <Text>검은색</Text>
-    </ChoiceBox>
-    <ChoiceBox>
-        <BoxImg src={G}></BoxImg>
-        <Text>회색</Text>
-    </ChoiceBox>
-    <ChoiceBox>
-    <BoxImg src={Three}></BoxImg>
-        <Text>삼색</Text>
-    </ChoiceBox>
-</A>
-<B>
-<ChoiceBox>
-        <BoxImg src={C}></BoxImg>
-        <Text>금색</Text>
-    </ChoiceBox>
-    <ChoiceBox>
-        <BoxImg src={Br}></BoxImg>
-        <Text>갈색</Text>
-    </ChoiceBox>
-    <ChoiceBox>
-    <BoxImg src={BW}></BoxImg>
-        <Text>흑백</Text>
-    </ChoiceBox>
-    <ChoiceBox>
-    <BoxImg src={M}></BoxImg>
-        <Text>고등어</Text>
-    </ChoiceBox>
-</B>
-</ChoiceContainer> */}
