@@ -21,47 +21,67 @@ const MatchingResult: React.FC = () => {
 	const handleGoDetail = (animalId: string) => {
 		navigate(`/animallist/detail/${animalId}`);
 	};
-
-	return (
-		<Container>
-			<Container2>
-				<Explanation>당신의 운명의 반려동물을 찾았어요! 🎊</Explanation>
-				<Container3>
+	const handleRestart = () => {
+		navigate(`/matching/test1`);
+	};
+	const renderChoiceContainer = () => {
+			if (matchingAnimals.length > 0) {
+			return (
+				<Container>
+				<Container2>
+					<Container3>
+					<Explanation>당신의 운명의 반려동물을 찾았어요! 🎊</Explanation>
 					<AnimalResultContainer>
-						{matchingAnimals.length > 0 ? (
-							matchingAnimals.map((animal, index) => (
-								<AC key={index}>
-									<Cercle src={animal.IMAGE_COURS}></Cercle>
-									<ACWrapper>
-										<Name>{animal.SPECIES_NM}</Name>
-										{/* <Line src={Vector} /> */}
-										<Name2>{animal.AGE_INFO}</Name2>
-									</ACWrapper>
-									<GoDetail
-										onClick={() => handleGoDetail(animal.ABDM_IDNTFY_NO)}
-									>
-										보러가기
-										<PawIcon as="img" src={Paw} alt="Paw icon" />
-									</GoDetail>
-								</AC>
-							))
-						) : (
-							<p>매칭되는 동물이 없습니다.</p>
-						)}
-					</AnimalResultContainer>
-					<ButtonContainer>
+						{matchingAnimals.map((animal, index) => (
+						<AC key={index}>
+							<Cercle src={animal.IMAGE_COURS}></Cercle>
+							<ACWrapper>
+							<Name>{animal.SPECIES_NM}</Name>
+							<Name2>{animal.AGE_INFO}</Name2>
+							</ACWrapper>
+							<GoDetail
+							onClick={() => handleGoDetail(animal.ABDM_IDNTFY_NO)}
+							>
+							보러가기
+							<PawIcon as="img" src={Paw} alt="Paw icon" />
+							</GoDetail>
+						</AC>
+						))}
+						</AnimalResultContainer>
+						<ButtonContainer>
 						<ButtonWrapper>
 							<B1>결과 설명듣기</B1>
-							<B2>테스트 다시하기</B2>
+							<B2 onClick={handleRestart}>테스트 다시하기</B2>
 						</ButtonWrapper>
-					</ButtonContainer>
+						</ButtonContainer>
+					</Container3>
+				</Container2>
+				</Container>
+			);
+		} else {
+            return (
+				<Container>
+				<Container2>
+				  <Container3>
+				<Explanation>운명의 반려동물을 찾지 못했어요🥲</Explanation>
+				<B2 onClick={handleRestart}>테스트 다시하기</B2>
 				</Container3>
-			</Container2>
-		</Container>
+				</Container2>
+			  </Container>
+            );
+        }
+    };
+	
+
+	return (
+		<>
+		{renderChoiceContainer()}
+		</>
 	);
 };
 
 export default MatchingResult;
+const A = styled.div``;
 const PawIcon = styled.svg`
 	width: 17px;
 	height: 17px;
@@ -110,7 +130,7 @@ const ButtonContainer = styled.div`
 	width: 500px;
 	max-height: 450px;
 	max-width: 1000px;
-	margin: 8% 40% 0% 40%;
+	margin: 8% 40% 5% 40%;
 	border-radius: 20px;
 	display: flex;
 	justify-content: center;
