@@ -7,8 +7,6 @@ import { PropagateLoader } from "react-spinners";
 import Cat1 from "../../assets/images/Cat1.png";
 
 const MatchingLoading: React.FC = () => {
-	const [currentQuestion, setCurrentQuestion] = useState(1);
-	const totalQuestions = 4;
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -16,9 +14,9 @@ const MatchingLoading: React.FC = () => {
 			navigate("/matching/result");
 		}, 3000); // 3000ms = 3초
 
-		// 컴포넌트가 언마운트되면 타이머를 정리합니다.
+		// 컴포넌트가 언마운트되면 타이머를 정리
 		return () => clearTimeout(timer);
-	}, []); // 빈 의존성 배열은 이 효과가 마운트 시에만 실행됨을 의미합니다.
+	}, []); // 빈 의존성 배열은 이 효과가 마운트 시에만 실행된다는 뜻!
 
 
 	return (
@@ -29,7 +27,6 @@ const MatchingLoading: React.FC = () => {
 					<br />
 					당신에게 찾아올까요?
 				</Explanation>
-
 				<PropagateLoader
 					color="#7ECDFF"
 					cssOverride={{

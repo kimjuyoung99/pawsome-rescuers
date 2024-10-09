@@ -7,17 +7,29 @@ import Paw from "../../assets/images/pow.svg";
 import Gold from "../../assets/images/matching_images/Gold.svg";
 import Diamond from "../../assets/images/matching_images/Diamond.svg";
 
-
+interface ChoiceBoxProps {
+    selected: boolean;
+    onClick: () => void;
+}
 const Matching_2: React.FC = () => {
     const { currentPage, setCurrentPage } = useProgress();
-    const totalQuestions = 4;
     const navigate = useNavigate();
+    const [selectedOption, setSelectedOption] = useState<string | null>(null);
 
     const handleNextStep = () => {
-        setCurrentPage(currentPage + 1);
-        navigate("/matching/test3");
+        if (selectedOption) {
+            localStorage.setItem('sex', selectedOption);
+            setCurrentPage(currentPage + 1);
+            navigate("/matching/test3");
+        } else {
+            alert("옵션을 선택해 주세요~");
+        }
     }
-
+    const handleChoiceClick = (choice: 'M' | 'F') => {
+        setSelectedOption(choice);
+        localStorage.setItem('sex', choice);
+    }
+    
     return (
         <Container>
             <Container2>
@@ -29,11 +41,11 @@ const Matching_2: React.FC = () => {
                 </Explanation>
 
                 <ChoiceContainer>
-                    <ChoiceBox>
+                    <ChoiceBox onClick={()=> handleChoiceClick('M')} selected={selectedOption === 'M'}>
                         <BoxImg src={Gold}></BoxImg>
                         <Text>황금</Text>
                     </ChoiceBox>
-                    <ChoiceBox>
+                    <ChoiceBox onClick={()=> handleChoiceClick('F')} selected={selectedOption === 'F'}>
                         <BoxImg src={Diamond}></BoxImg>
                         <Text>다이아</Text>
                     </ChoiceBox>
@@ -53,14 +65,14 @@ export default Matching_2;
 const ChoiceContainer = styled.div`
 display: flex;
 `;
-const ChoiceBox = styled.div`
+const ChoiceBox = styled.div<ChoiceBoxProps>`
 width: 214px;
 height: 215px;
 flex-shrink: 0;
 border-radius: 40px;
 border: 4px solid #E5E5E5;
 margin : 30px 15px 30px 15px;
-background: var(--Schemes-On-Primary, #FFF);
+background: ${props => props.selected ? '#e5e5e5' : 'var(--Schemes-On-Primary, #FFF)'};
 transition: all 0.3s ease;
 	// 옵션: 포커스 시 나타나는 기본 아웃라인도 제거하고 싶다면 추가
 	&:focus {

@@ -2,52 +2,66 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Container } from "../../GlobalStyles";
-import ProgressBar, { useProgress } from "../../components/ProgressBar";
 import Paw from "../../assets/images/pow.svg";
 import Dog from "../../assets/images/matching_images/Dog.svg"
 import Cat from "../../assets/images/matching_images/Cat.svg"
 import Rabbit from "../../assets/images/matching_images/Rabbit.svg"
+import ProgressBar, { useProgress } from "../../components/ProgressBar";
 
+interface ChoiceBoxProps {
+    selected: boolean;
+    onClick: () => void;
+}
 
 const Matching_1: React.FC = () => {
     const { currentPage, setCurrentPage } = useProgress();
     const navigate = useNavigate();
+    const [selectedOption, setSelectedOption] = useState<string | null>(null);
 
     const handleNextStep = () => {
-        setCurrentPage(currentPage + 1);
-        navigate("/matching/test2");
+        if(selectedOption){
+            setCurrentPage(currentPage + 1);
+            navigate("/matching/test2");
+        } else {
+            alert("옵션을 선택해 주세요~");
+        }
+    }
+
+    const handleChoiceClick = (choice: 'Dog' | 'Cat' | 'Other') => {
+        setSelectedOption(choice);
+        localStorage.setItem('species', choice);
     }
 
     return (
         <Container>
             <Container2>
                 <ProgressBarWrapper>
-                <ProgressBar currentPage={1} totalPages={4} />
+                    <ProgressBar currentPage={1} totalPages={4} />
                 </ProgressBarWrapper>
                 <Explanation>
-                꿈에서 나에게 어떤 동물이 달려온다!<br/> 이 동물은 무엇일까?
+                    꿈에서 나에게 어떤 동물이 달려온다!<br/> 이 동물은 무엇일까?
                 </Explanation>
 
                 <ChoiceContainer>
-                    <ChoiceBox>
-                        <BoxImg src={Dog}></BoxImg>
+                    <ChoiceBox onClick={() => handleChoiceClick('Dog')} selected={selectedOption === 'Dog'}>
+                        <BoxImg src={Dog} alt="Dog" />
                         <Text>강아지</Text>
                     </ChoiceBox>
-                    <ChoiceBox>
-                        <BoxImg src={Cat}></BoxImg>
+                    <ChoiceBox onClick={() => handleChoiceClick('Cat')} selected={selectedOption === 'Cat'}>
+                        <BoxImg src={Cat} alt="Cat" />
                         <Text>고양이</Text>
                     </ChoiceBox>
-                    <ChoiceBox>
-                        <BoxImg src={Rabbit}></BoxImg>
+                    <ChoiceBox onClick={() => handleChoiceClick('Other')} selected={selectedOption === 'Other'}>
+                        <BoxImg src={Rabbit} alt="Other" />
                         <Text>그 외</Text>
                     </ChoiceBox>
                 </ChoiceContainer>
-				<NextBtn onClick={handleNextStep}>
+                <NextBtn onClick={handleNextStep}>
                     다음
-					<PawIcon>
-						<img src={Paw} />
-					</PawIcon>
-				</NextBtn>
+                    <PawIcon>
+                        <img src={Paw} alt="Paw icon" />
+                    </PawIcon>
+                </NextBtn>
             </Container2>
         </Container>
     );
@@ -57,14 +71,15 @@ export default Matching_1;
 const ChoiceContainer = styled.div`
 display: flex;
 `;
-const ChoiceBox = styled.div`
+
+const ChoiceBox = styled.div<ChoiceBoxProps>`
 width: 214px;
 height: 215px;
 flex-shrink: 0;
 border-radius: 40px;
 border: 4px solid #E5E5E5;
 margin : 30px 15px 30px 15px;
-background: var(--Schemes-On-Primary, #FFF);
+background: ${props => props.selected ? '#e5e5e5' : 'var(--Schemes-On-Primary, #FFF)'};
 transition: all 0.3s ease;
 	// 옵션: 포커스 시 나타나는 기본 아웃라인도 제거하고 싶다면 추가
 	&:focus {

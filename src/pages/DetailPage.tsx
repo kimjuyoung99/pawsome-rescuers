@@ -22,8 +22,8 @@ const DetailPage: React.FC = () => {
 					const data = await fetchAnimalDataById(id);
 					console.log("Fetched animal data:", data); // 주석: 받아온 데이터 로깅
 					setAnimalData(data);
-          console.log("Latitude:", data?.REFINE_WGS84_LAT);
-          console.log("Longitude:", data?.REFINE_WGS84_LOGT);
+			console.log("Latitude:", data?.REFINE_WGS84_LAT);
+			console.log("Longitude:", data?.REFINE_WGS84_LOGT);
 				} catch (error) {
 					console.error("Error fetching animal data:", error);
 				}

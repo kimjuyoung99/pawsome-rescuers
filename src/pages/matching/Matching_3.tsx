@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Container } from "../../GlobalStyles";
@@ -9,15 +9,37 @@ import Car from "../../assets/images/matching_images/Car.svg";
 import House from "../../assets/images/matching_images/House.svg";
 import ProgressBar, { useProgress } from "../../components/ProgressBar";
 
+interface ChoiceBoxProps {
+    selected: boolean;
+    onClick: () => void;
+}
 
 const Matching_3: React.FC = () => {
     const { currentPage, setCurrentPage } = useProgress();
-    const totalQuestions = 4;
     const navigate = useNavigate();
+    const [selectedOption, setSelectedOption] = useState<string | null>(null);
+
+    useEffect(() => {
+        console.log("Current localStorage state:", {
+            species: localStorage.getItem('species'),
+            sex: localStorage.getItem('sex'),
+            weight: localStorage.getItem('weight')
+        });
+    }, []);
 
     const handleNextStep = () => {
-        setCurrentPage(currentPage + 1);
-        navigate("/matching/test4");
+        if(selectedOption){
+            setCurrentPage(currentPage + 1);
+            navigate("/matching/result");
+        } else {
+            alert("옵션을 선택해 주세요~");
+        }
+    }
+
+    const handleChoiceClick = (choice: 'AA' | 'BB' | 'CC' | 'DD') => {
+        setSelectedOption(choice);
+        localStorage.setItem('weight', choice);
+        console.log(`Weight set to: ${choice}`);
     }
 
     return (
@@ -33,21 +55,21 @@ const Matching_3: React.FC = () => {
 
                 <ChoiceContainer>
                     <A>
-                        <ChoiceBox>
+                    <ChoiceBox onClick={()=> handleChoiceClick('AA')} selected={selectedOption === 'AA'}>
                             <BoxImg src={Key}></BoxImg>
                             <Text>열쇠 크기</Text>
                         </ChoiceBox>
-                        <ChoiceBox>
+                        <ChoiceBox onClick={()=> handleChoiceClick('BB')} selected={selectedOption === 'BB'}>
                             <BoxImg src={Carria}></BoxImg>
                             <Text>캐리어 크기</Text>
                         </ChoiceBox>
                     </A>
                     <B>
-                        <ChoiceBox>
+                    <ChoiceBox onClick={()=> handleChoiceClick('CC')} selected={selectedOption === 'CC'}>
                             <BoxImg src={Car}></BoxImg>
                             <Text>자동차 크기</Text>
                         </ChoiceBox>
-                        <ChoiceBox>
+                        <ChoiceBox onClick={()=> handleChoiceClick('DD')} selected={selectedOption === 'DD'}>
                             <BoxImg src={House}></BoxImg>
                             <Text>집 채</Text>
                         </ChoiceBox>
@@ -66,15 +88,15 @@ const Matching_3: React.FC = () => {
 
 export default Matching_3;
 const A = styled.div`
-  display: flex;
-  justify-content: center;
-  width: 100%;
+    display: flex;
+    justify-content: center;
+    width: 100%;
 `;
 const B = styled.div`
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  margin-top: 5px; // 첫 번째 줄과의 간격 조정
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 5px; // 첫 번째 줄과의 간격 조정
 `;
 const ChoiceContainer = styled.div`
   display: flex;
@@ -82,7 +104,7 @@ const ChoiceContainer = styled.div`
   align-items: center;
   width: 100%;
 `;
-const ChoiceBox = styled.div`
+const ChoiceBox = styled.div<ChoiceBoxProps>`
 width: 300px;
 height: 120px;
 display: flex;
@@ -90,7 +112,7 @@ flex-shrink: 0;
 border-radius: 40px;
 border: 4px solid #E5E5E5;
 margin: 10px 10px 5px 10px; // 상하좌우 여백을 동일하게 설정
-background: var(--Schemes-On-Primary, #FFF);
+background: ${props => props.selected ? '#e5e5e5' : 'var(--Schemes-On-Primary, #FFF)'};
 transition: all 0.3s ease;
 	// 옵션: 포커스 시 나타나는 기본 아웃라인도 제거하고 싶다면 추가
 	&:focus {

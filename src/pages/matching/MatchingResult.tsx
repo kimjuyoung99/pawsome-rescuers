@@ -1,16 +1,54 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Container } from "../../GlobalStyles";
 import Vector from "../../assets/images/Vector_2.svg";
 import Paw from "../../assets/images/Paw_blue.svg";
+import { fetchAnimalData, AnimalData } from "../../services/api";
+import {
+	transformAnimalData,
+	TransformedAnimalData,
+} from "../matching/matchingAlgorithms/Matching_AtherOption";
 
 const MatchingResult: React.FC = () => {
+	const [matchingAnimals, setMatchingAnimals] = useState<
+		TransformedAnimalData[]
+	>([]);
 	const navigate = useNavigate();
 
-	const handleNextStep = () => {
-		navigate("/matching/test4");
-	};
+	//**
+	useEffect(() => {
+		const species = localStorage.getItem('species');
+		const sex = localStorage.getItem('sex');
+		const weight = localStorage.getItem('weight');
+		console.log('LocalStorage values in MatchingResult:', { species, sex, weight });
+	
+		const fetchData = async () => {
+			try {
+				const { data, totalCount } = await fetchAnimalData();
+				console.log(`Total data count: ${totalCount}`);
+				const transformedData: TransformedAnimalData[] =
+					data.map(transformAnimalData);
+					const filteredData = transformedData.filter(animal => {
+						const speciesMatch = animal.species === species;
+						const sexMatch = animal.sex === sex;
+						const weightMatch = animal.weightCategory === weight;
+						
+						// console.log(`Animal: ${animal.SPECIES_NM}, Species: ${animal.species}, Sex: ${animal.sex}, Weight: ${animal.weightCategory}`);
+						// console.log(`Matches: Species: ${speciesMatch}, Sex: ${sexMatch}, Weight: ${weightMatch}`);
+						
+						return speciesMatch && sexMatch && weightMatch;
+					});
+
+				setMatchingAnimals(filteredData.slice(0, 3)); // 최대 3개의 결과만 표시
+				console.log("Filtered animals:", filteredData);
+			} catch (error) {
+				console.error("Error fetching animal data:", error);
+			}
+		};
+
+		fetchData();
+	}, []);
 
 	return (
 		<Container>
@@ -18,48 +56,26 @@ const MatchingResult: React.FC = () => {
 				<Explanation>당신의 운명의 반려동물을 찾았어요! 🎊</Explanation>
 				<Container3>
 					<AnimalResultContainer>
-						<AC>
-							<Cercle></Cercle>
-							<ACWrapper>
-								<Name>
-									한국 고양이
-									<Line src={Vector} />
-									1살
-								</Name>
-							</ACWrapper>
-							<GoDetail>
-								보러가기
-								<PawIcon as="img" src={Paw} alt="Paw icon" />
-							</GoDetail>
-						</AC>
-						<AC>
-                        <Cercle></Cercle>
-							<ACWrapper>
-								<Name>
-									한국 고양이
-									<Line src={Vector} />
-									1살
-								</Name>
-							</ACWrapper>
-							<GoDetail>
-								보러가기
-								<PawIcon as="img" src={Paw} alt="Paw icon" />
-							</GoDetail>
-						</AC>
-						<AC>
-                        <Cercle></Cercle>
-							<ACWrapper>
-								<Name>
-									한국 고양이
-									<Line src={Vector} />
-									1살
-								</Name>
-							</ACWrapper>
-							<GoDetail>
-								보러가기
-								<PawIcon as="img" src={Paw} alt="Paw icon" />
-							</GoDetail>
-						</AC>
+						{matchingAnimals.length > 0 ? (
+							matchingAnimals.map((animal, index) => (
+								<AC key={index}>
+									<Cercle src={animal.IMAGE_COURS}></Cercle>
+									<ACWrapper>
+										<Name>
+											{animal.SPECIES_NM}
+											<Line src={Vector} />
+											{animal.AGE_INFO}
+										</Name>
+									</ACWrapper>
+									<GoDetail>
+										보러가기
+										<PawIcon as="img" src={Paw} alt="Paw icon" />
+									</GoDetail>
+								</AC>
+							))
+						) : (
+							<p>매칭되는 동물이 없습니다.</p>
+						)}
 					</AnimalResultContainer>
 					<ButtonContainer>
 						<ButtonWrapper>
@@ -95,8 +111,7 @@ const B2 = styled.button`
 	letter-spacing: -0.92px;
 	border-radius: 35px;
 	background: #323232;
-    font-family: "NanumSquareNeo", sans-serif;
-
+	font-family: "NanumSquareNeo", sans-serif;
 `;
 const B1 = styled.button`
 	display: flex;
@@ -115,8 +130,7 @@ const B1 = styled.button`
 	letter-spacing: -0.92px;
 	border-radius: 61px;
 	border: 1px solid #7f7f7f;
-    font-family: "NanumSquareNeo", sans-serif;
-
+	font-family: "NanumSquareNeo", sans-serif;
 `;
 const ButtonContainer = styled.div`
 	/* border: 2px solid blue; */
@@ -163,14 +177,14 @@ const Name = styled.div`
 	font-family: Inter;
 	font-size: 22px;
 	font-style: normal;
-    font-family: "NanumSquareNeo", sans-serif;
+	font-family: "NanumSquareNeo", sans-serif;
 
 	font-weight: 600;
 	line-height: 30px; /* 166.667% */
 	padding-bottom: 5%;
 	margin-top: -10%;
 `;
-const Cercle = styled.div`
+const Cercle = styled.img`
 	width: 214px;
 	height: 200px;
 	flex-shrink: 0;
@@ -212,7 +226,7 @@ const Explanation = styled.div`
 	color: #323232;
 	text-align: center;
 	font-size: 30px;
-    font-style: normal;
+	font-style: normal;
 	font-family: "NanumSquareNeo", sans-serif;
 	font-weight: 700;
 	margin-top: 20px;
@@ -232,4 +246,3 @@ const Container2 = styled.div`
 	flex-direction: column;
 	align-items: center;
 `;
-

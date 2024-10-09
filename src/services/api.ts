@@ -79,34 +79,52 @@ export const fetchAnimalDataById = async (id: string): Promise<AnimalData | null
     }
 }
 
-export const fetchAnimalData = async (pIndex: number = 1, pSize: number = 15): Promise<{ data: AnimalData[], totalCount: number }> => {
+export const fetchAnimalData = async (): Promise<{ data: AnimalData[], totalCount: number }> => {
     console.log('API_KEY:', API_KEY);
+
+    let allData: AnimalData[] = [];
+    let totalCount = 0;
+    let pIndex = 1;
+    const pSize = 1000; // 한 번에 가져올 최대 데이터 수
 
     try {
         if (!API_KEY) {
             throw new Error('API key is not defined. Please check your environment variables.');
         }
 
-        const response = await axios.get(BASE_URL, {
-            params: {
-                Key: API_KEY,
-                Type: 'json',
-                pIndex,  // 수정: 페이지 인덱스 전달
-                pSize,   // 수정: 페이지 크기 전달
-            }
-        });
+        while (true) {
+            const response = await axios.get(BASE_URL, {
+                params: {
+                    Key: API_KEY,
+                    Type: 'json',
+                    pIndex,
+                    pSize,
+                }
+            });
 
-        if (response.data && response.data.AbdmAnimalProtect && response.data.AbdmAnimalProtect[1]) {
-            // 추가: 전체 데이터 개수 추출
-            const totalCount = response.data.AbdmAnimalProtect[0].head[0].list_total_count;
-            return {
-                data: response.data.AbdmAnimalProtect[1].row,
-                totalCount: totalCount
-            };
-        } else {
-            console.error('Unexpected API response structure:', response.data);
-            return { data: [], totalCount: 0 };  //에러 시 반환 형식 변경
+            if (response.data && response.data.AbdmAnimalProtect && response.data.AbdmAnimalProtect[1]) {
+                const newData = response.data.AbdmAnimalProtect[1].row;
+                allData = [...allData, ...newData];
+
+                // 첫 번째 응답에서만 전체 데이터 개수를 가져옴
+                if (pIndex === 1) {
+                    totalCount = response.data.AbdmAnimalProtect[0].head[0].list_total_count;
+                }
+
+                // 가져온 데이터가 pSize보다 적으면 모든 데이터를 가져온 것으로 간주
+                if (newData.length < pSize) {
+                    break;
+                }
+
+                pIndex++; // 다음 페이지로
+            } else {
+                console.error('Unexpected API response structure:', response.data);
+                break;
+            }
         }
+
+        console.log(`Total fetched data: ${allData.length}`);
+        return { data: allData, totalCount };
     } catch (error) {
         console.error('Error fetching animal data:', error);
         throw error;
