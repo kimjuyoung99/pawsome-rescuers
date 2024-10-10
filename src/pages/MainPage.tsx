@@ -3,13 +3,15 @@ import { useNavigate } from "react-router-dom";
 import styled, { keyframes } from "styled-components";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { fetchAnimalData, AnimalData } from "../services/api"; // API 함수와 타입 import
+import { fetchAnimalData, AnimalData,fetchUniqueShelters,fetchAnimalDataPaginated } from "../services/api"; // API 함수와 타입 import
 import { Swiper, SwiperSlide } from "swiper/react";
 import GogAndCat from "../assets/images/MainPage_Dog_and_Cat.svg";
 import Paw from "../assets/images/pow.svg";
 import AnimalDataBox from "../components/DataBox"; // 새로운 컴포넌트 import
 import { PropagateLoader } from "react-spinners";
-
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../components/store';
+import { loadShelterData } from '../components/shelterSlice';
 import {
 	Virtual,
 	Navigation,
@@ -40,6 +42,11 @@ const MainPage: React.FC = () => {
 	const [totalCount, setTotalCount] = useState(0); // 전체 데이터 개수를 저장할 상태
 	const itemsPerPage = 15;
 	const [urgentAnimals, setUrgentAnimals] = useState<AnimalData[]>([]);
+	const dispatch = useDispatch<AppDispatch>();
+
+	useEffect(() => {
+	  dispatch(loadShelterData());
+	}, [dispatch]);
 
 	useEffect(() => {
 		const loadAllAnimals = async () => {
@@ -58,7 +65,7 @@ const MainPage: React.FC = () => {
 	useEffect(() => {
 		const loadPagedAnimals = async () => {
 			try {
-				const result = await fetchAnimalData(currentPage, itemsPerPage);
+				const result = await fetchAnimalDataPaginated(currentPage, itemsPerPage);
 				setAnimalData(result.data);
 				setTotalCount(result.totalCount);
 			} catch (error) {
@@ -72,7 +79,7 @@ const MainPage: React.FC = () => {
 	// 전체 데이터를 가져오는 함수 (공고 종료 날짜 필터링 하기 위해)
 	const fetchAllAnimalData = async () => {
 		try {
-			const allData = await fetchAnimalData(1, 1000); // 매우 큰 숫자로 모든 데이터 요청
+			const allData = await fetchAnimalDataPaginated(1, 1000); // 매우 큰 숫자로 모든 데이터 요청
 			return allData.data;
 		} catch (error) {
 			console.error("Failed to fetch all animal data:", error);

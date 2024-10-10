@@ -163,3 +163,30 @@ export const fetchAnimalDataPaginated = async (page: number = 1, itemsPerPage: n
         throw error;
     }
 };
+//보호소 데이터만 따로 저장
+export interface IShelter {
+    SHTER_NM: string;
+    REFINE_WGS84_LAT: number;
+    REFINE_WGS84_LOGT: number;
+}
+export const fetchUniqueShelters = async (): Promise<IShelter[]> => {
+    try {
+        const { data } = await fetchAnimalData();
+        const shelterMap = new Map<string, IShelter>();
+
+        data.forEach((animal: AnimalData) => {
+            if (animal.SHTER_NM && animal.REFINE_WGS84_LAT && animal.REFINE_WGS84_LOGT) {
+                shelterMap.set(animal.SHTER_NM, {
+                    SHTER_NM: animal.SHTER_NM,
+                    REFINE_WGS84_LAT: parseFloat(animal.REFINE_WGS84_LAT),
+                    REFINE_WGS84_LOGT: parseFloat(animal.REFINE_WGS84_LOGT)
+                });
+            }
+        });
+
+        return Array.from(shelterMap.values());
+    } catch (error) {
+        console.error('Error fetching unique shelters:', error);
+        throw error;
+    }
+};

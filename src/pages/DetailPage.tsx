@@ -22,8 +22,8 @@ const DetailPage: React.FC = () => {
 					const data = await fetchAnimalDataById(id);
 					console.log("Fetched animal data:", data); // 주석: 받아온 데이터 로깅
 					setAnimalData(data);
-			console.log("Latitude:", data?.REFINE_WGS84_LAT);
-			console.log("Longitude:", data?.REFINE_WGS84_LOGT);
+					console.log("Latitude:", data?.REFINE_WGS84_LAT);
+					console.log("Longitude:", data?.REFINE_WGS84_LOGT);
 				} catch (error) {
 					console.error("Error fetching animal data:", error);
 				}
@@ -123,10 +123,13 @@ const DetailPage: React.FC = () => {
 								lat: parseFloat(animalData.REFINE_WGS84_LAT),
 								lng: parseFloat(animalData.REFINE_WGS84_LOGT),
 							}}
-                style={{ width: "100%", height: "400px",borderRadius: "40px",border: "2px solid #e0e0e0"
-              }}
+							style={{
+								width: "100%",
+								height: "400px",
+								borderRadius: "40px",
+								border: "2px solid #e0e0e0",
+							}}
 							level={3}
-              
 						/>
 					</MapContainer>
 				</Section2>
@@ -139,7 +142,7 @@ export default DetailPage;
 
 const MapContainer = styled.div`
 	padding-bottom: 80%;
-  /* border: 2px solid red; */
+	/* border: 2px solid red; */
 `;
 // 지도 컨테이너 스타일링 (추후 구현 예정)
 const Map = styled.div`
