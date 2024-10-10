@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import styled, { keyframes } from "styled-components";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { fetchAnimalData, AnimalData,fetchUniqueShelters,fetchAnimalDataPaginated } from "../services/api"; // API 함수와 타입 import
+import {AnimalData,fetchUrgentAnimals } from "../services/api"; // API 함수와 타입 import
 import { Swiper, SwiperSlide } from "swiper/react";
 import GogAndCat from "../assets/images/MainPage_Dog_and_Cat.svg";
 import Paw from "../assets/images/pow.svg";
@@ -36,49 +36,29 @@ const fadeIn = keyframes`
 
 const MainPage: React.FC = () => {
 	const navigate = useNavigate();
-	const [currentPage, setCurrentPage] = useState(1);
-	const [animalData, setAnimalData] = useState<AnimalData[]>([]);
-	const [totalCount, setTotalCount] = useState(0); // 전체 데이터 개수를 저장할 상태
-	const itemsPerPage = 15;
 	const [urgentAnimals, setUrgentAnimals] = useState<AnimalData[]>([]);
+	const [isLoadingUrgent, setIsLoadingUrgent] = useState(true);
 	const dispatch = useDispatch<AppDispatch>();
 
 	useEffect(() => {
-	  dispatch(loadShelterData());
-	}, [dispatch]);
-
-	// useEffect(() => {
-	// 	const loadAllAnimals = async () => {
-	// 		try {
-	// 			const allAnimals = await fetchAllAnimalData();
-	// 			const filteredUrgentAnimals = getFilteredUrgentAnimals(allAnimals);
-	// 			setUrgentAnimals(filteredUrgentAnimals);
-	// 		} catch (error) {
-	// 			console.error("Failed to fetch all animal data:", error);
-	// 		}
-	// 	};
-
-	// 	loadAllAnimals();
-	// }, []); // 컴포넌트 마운트 시 한 번만 실행
-
-    useEffect(() => {
-        const loadPagedAnimals = async () => {
-            try {
-                // shelterName 파라미터를 빈 문자열로 전달
-                const result = await fetchAnimalDataPaginated(currentPage, itemsPerPage, "");
-                setAnimalData(result.data);
-                setTotalCount(result.totalCount);
-
-                // 긴급한 동물 데이터 필터링
-                const filteredUrgentAnimals = getFilteredUrgentAnimals(result.data);
-                setUrgentAnimals(filteredUrgentAnimals);
-            } catch (error) {
-                console.error("Failed to fetch paged animal data:", error);
-            }
-        };
-
-        loadPagedAnimals();
-    }, [currentPage]);
+		dispatch(loadShelterData());
+		}, [dispatch]);
+		
+		useEffect(() => {
+			const loadUrgentAnimals = async () => {
+			setIsLoadingUrgent(true);
+			try {
+				const animals = await fetchUrgentAnimals(1); // 3일 이내 마감되는 동물들
+				setUrgentAnimals(animals);
+			} catch (error) {
+				console.error("Failed to fetch urgent animal data:", error);
+			} finally {
+				setIsLoadingUrgent(false);
+			}
+			};
+		
+			loadUrgentAnimals();
+		}, []);
 
 	//공고 데이터 파싱 함수
 	const parseDate = (dateString: string): Date => {
@@ -133,48 +113,47 @@ const MainPage: React.FC = () => {
 					<img src={GogAndCat} alt="강아지와 고양이" />
 				</AnimalsContainer>
 			</ContentWrapper>
-
 			<SwiperContainer>
-                <Text1>공고기한이 얼마 남지 않은 친구들이에요!</Text1>
-                <UrgentAnimalContainer>
-                    {urgentAnimals.length > 0 ? (
-                        <Swiper
-                            modules={[Virtual, Navigation, SwiperPagination]}
-                            slidesPerView={5}
-                            spaceBetween={-45}
-                            slidesOffsetBefore={50}
-                            navigation={{
-                                nextEl: ".swiper-button-next",
-                                prevEl: ".swiper-button-prev",
-                            }}
-                            virtual
-                        >
-                            {urgentAnimals.map((animal, index) => (
-                                <SwiperSlide key={animal.ABDM_IDNTFY_NO} virtualIndex={index}>
-                                    <Link to={`/animallist/detail/${animal.ABDM_IDNTFY_NO}`}>
-                                        <AnimalDataBox animal={animal} />
-                                    </Link>
-                                </SwiperSlide>
-                            ))}
-                            <div className="swiper-button-prev"></div>
-                            <div className="swiper-button-next"></div>
-                        </Swiper>
-                    ) : (
-                        <NoUrgentAnimals>
-                            <Container2>
-                                <LoaderWrapper>
-                                    <PropagateLoader
-                                        color="#7ECDFF"
-                                        cssOverride={{
-                                            transform: "scale(1)",
-                                        }}
-                                    />
-                                </LoaderWrapper>
-                            </Container2>
-                        </NoUrgentAnimals>
-                    )}
-                </UrgentAnimalContainer>
-            </SwiperContainer>
+        <Text1>공고기한이 얼마 남지 않은 친구들이에요!</Text1>
+        <UrgentAnimalContainer>
+			{isLoadingUrgent ? (
+				<Container2>
+				<LoaderWrapper>
+					<PropagateLoader
+					color="#7ECDFF"
+					cssOverride={{
+						transform: "scale(1)",
+					}}
+					/>
+				</LoaderWrapper>
+				</Container2>
+			) : urgentAnimals.length > 0 ? (
+				<Swiper
+				modules={[Virtual, Navigation, SwiperPagination]}
+				slidesPerView={5}
+				spaceBetween={-45}
+				slidesOffsetBefore={50}
+				navigation={{
+					nextEl: ".swiper-button-next",
+					prevEl: ".swiper-button-prev",
+				}}
+				virtual
+				>
+				{urgentAnimals.map((animal, index) => (
+					<SwiperSlide key={animal.ABDM_IDNTFY_NO} virtualIndex={index}>
+					<Link to={`/animallist/detail/${animal.ABDM_IDNTFY_NO}`}>
+						<AnimalDataBox animal={animal} />
+					</Link>
+					</SwiperSlide>
+				))}
+				<div className="swiper-button-prev"></div>
+				<div className="swiper-button-next"></div>
+				</Swiper>
+			) : (
+				<NoUrgentAnimals>현재 긴급한 공고가 없습니다.</NoUrgentAnimals>
+			)}
+			</UrgentAnimalContainer>
+		</SwiperContainer>
 		</PageContainer>
 	);
 };

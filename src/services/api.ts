@@ -148,6 +148,58 @@
         }
     };
 
+//공고 마감 임박 동물 데이터 함수 추가
+    export const fetchUrgentAnimals = async (daysThreshold: number = 3): Promise<AnimalData[]> => {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const thresholdDate = new Date(today.getTime() + daysThreshold * 24 * 60 * 60 * 1000);
+            thresholdDate.setHours(23, 59, 59, 999);
+        
+            let pIndex = 1;
+            const pSize = 100; // Reduced page size for quicker initial load
+            let urgentAnimals: AnimalData[] = [];
+        
+            while (true) {
+            const response = await axios.get(BASE_URL, {
+                params: {
+                Key: API_KEY,
+                Type: 'json',
+                pIndex,
+                pSize,
+                }
+            });
+        
+            if (response.data?.AbdmAnimalProtect?.[1]?.row) {
+                const animals: AnimalData[] = response.data.AbdmAnimalProtect[1].row;
+                const newUrgentAnimals = animals.filter(animal => {
+                const endDate = parseDate(animal.PBLANC_END_DE);
+                return endDate >= today && endDate <= thresholdDate;
+                });
+        
+                urgentAnimals.push(...newUrgentAnimals);
+        
+                if (animals.length < pSize || urgentAnimals.length >= 20) {
+                break; // Stop if we've fetched all data or have enough urgent animals
+                }
+        
+                pIndex++;
+            } else {
+                console.error('Unexpected API response structure:', response.data);
+                break;
+            }
+            }
+        
+            return urgentAnimals.slice(0, 20); // Limit to 20 urgent animals
+        };
+        
+        // Helper function to parse date
+        const parseDate = (dateString: string): Date => {
+            const year = parseInt(dateString.substring(0, 4));
+            const month = parseInt(dateString.substring(4, 6)) - 1;
+            const day = parseInt(dateString.substring(6, 8));
+            return new Date(year, month, day);
+        };
+        
     // 새로운 함수: 페이지네이션을 지원하는 fetchAnimalDataPaginated
     export const fetchAnimalDataPaginated = async (page: number, itemsPerPage: number, shelterName: string): Promise<{ data: AnimalData[], totalCount: number }> => {
         try {

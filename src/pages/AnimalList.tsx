@@ -11,7 +11,16 @@ import styled from "styled-components";
 import AnimalDataBox from "../components/DataBox"; // 새로운 컴포넌트 import
 import FliterDropDown from "../components/FliterDropDown";
 import { Link } from "react-router-dom";
-import { fetchAnimalData, fetchAnimalDataPaginated, AnimalData  } from "../services/api"; // API 함수와 타입 import
+import { useDispatch } from 'react-redux';
+import { loadShelterData } from '../components/shelterSlice';
+import { AppDispatch } from '../components/store';
+
+import {
+	fetchAnimalData,
+	fetchAnimalDataPaginated,
+	AnimalData,
+	fetchUrgentAnimals,
+} from "../services/api"; // API 함수와 타입 import
 import { Swiper, SwiperSlide } from "swiper/react";
 import { PropagateLoader } from "react-spinners";
 import {
@@ -76,30 +85,56 @@ const AnimalList: React.FC = () => {
 	const [totalCount, setTotalCount] = useState(0); // 전체 데이터 개수를 저장할 상태
 	const [urgentAnimals, setUrgentAnimals] = useState<AnimalData[]>([]);
 	const itemsPerPage = 15;
+	const [isLoadingUrgent, setIsLoadingUrgent] = useState(true);
+	const dispatch = useDispatch<AppDispatch>();
 
 	useEffect(() => {
-	const loadPagedAnimals = async () => {
-		try {
-		const result = await fetchAnimalDataPaginated(currentPage, itemsPerPage, "");
-		setAnimalData(result.data);
-		setTotalCount(result.totalCount);
-		} catch (error) {
-		console.error("Failed to fetch paged animal data:", error);
-		}
-	};
+		dispatch(loadShelterData());
+		}, [dispatch]);
+		
+		useEffect(() => {
+			const loadUrgentAnimals = async () => {
+			setIsLoadingUrgent(true);
+			try {
+				const animals = await fetchUrgentAnimals(1); // 3일 이내 마감되는 동물들
+				setUrgentAnimals(animals);
+			} catch (error) {
+				console.error("Failed to fetch urgent animal data:", error);
+			} finally {
+				setIsLoadingUrgent(false);
+			}
+			};
+		
+			loadUrgentAnimals();
+		}, []);
 
-	loadPagedAnimals();
+	useEffect(() => {
+		const loadPagedAnimals = async () => {
+			try {
+				const result = await fetchAnimalDataPaginated(
+					currentPage,
+					itemsPerPage,
+					"",
+				);
+				setAnimalData(result.data);
+				setTotalCount(result.totalCount);
+			} catch (error) {
+				console.error("Failed to fetch paged animal data:", error);
+			}
+		};
+
+		loadPagedAnimals();
 	}, [currentPage, itemsPerPage]);
 
-useEffect(() => {
+	useEffect(() => {
 		const loadAllAnimals = async () => {
-		try {
-			const allAnimals = await fetchAllAnimalData();
-			const filteredUrgentAnimals = getFilteredUrgentAnimals(allAnimals);
-			setUrgentAnimals(filteredUrgentAnimals);
-		} catch (error) {
-			console.error("Failed to fetch all animal data:", error);
-		}
+			try {
+				const allAnimals = await fetchAllAnimalData();
+				const filteredUrgentAnimals = getFilteredUrgentAnimals(allAnimals);
+				setUrgentAnimals(filteredUrgentAnimals);
+			} catch (error) {
+				console.error("Failed to fetch all animal data:", error);
+			}
 		};
 
 		loadAllAnimals();
@@ -107,13 +142,17 @@ useEffect(() => {
 
 	useEffect(() => {
 		const loadPagedAnimals = async () => {
-		try {
-			const result = await fetchAnimalDataPaginated(currentPage, itemsPerPage, "");
-			setAnimalData(result.data);
-			setTotalCount(result.totalCount);
-		} catch (error) {
-			console.error("Failed to fetch paged animal data:", error);
-		}
+			try {
+				const result = await fetchAnimalDataPaginated(
+					currentPage,
+					itemsPerPage,
+					"",
+				);
+				setAnimalData(result.data);
+				setTotalCount(result.totalCount);
+			} catch (error) {
+				console.error("Failed to fetch paged animal data:", error);
+			}
 		};
 
 		loadPagedAnimals();
@@ -122,11 +161,11 @@ useEffect(() => {
 	// fetchAllAnimalData 함수 수정
 	const fetchAllAnimalData = async () => {
 		try {
-		const result = await fetchAnimalData();
-		return result.data;
+			const result = await fetchAnimalData();
+			return result.data;
 		} catch (error) {
-		console.error("Failed to fetch all animal data:", error);
-		return [];
+			console.error("Failed to fetch all animal data:", error);
+			return [];
 		}
 	};
 
@@ -205,42 +244,42 @@ useEffect(() => {
 		<Container>
 			<Text1>공고기한이 얼마 남지 않은 친구들이에요!</Text1>
 			<UrgentAnimalContainer>
-				{urgentAnimals.length > 0 ? (
-					<Swiper
-						modules={[Virtual, Navigation, SwiperPagination]}
-						slidesPerView={5}
-						spaceBetween={1}
-						slidesOffsetBefore={50}
-						navigation={{
-							nextEl: ".swiper-button-next",
-							prevEl: ".swiper-button-prev",
-						}}
-						virtual
-					>
-						{urgentAnimals.map((animal, index) => (
-							<SwiperSlide key={animal.ABDM_IDNTFY_NO} virtualIndex={index}>
-								<Link to={`/animallist/detail/${animal.ABDM_IDNTFY_NO}`}>
-									<AnimalDataBox animal={animal} />
-								</Link>
-							</SwiperSlide>
-						))}
-						<div className="swiper-button-prev"></div>
-						<div className="swiper-button-next"></div>
-					</Swiper>
-				) : (
-					<NoUrgentAnimals>
-            <Container2>
-                <LoaderWrapper>
-                <PropagateLoader
-                    color="#7ECDFF"
-                    cssOverride={{
-                    transform: "scale(1)",
-                    }}
-                />
-                </LoaderWrapper>
-            </Container2>					
-        </NoUrgentAnimals>
-				)}
+			{isLoadingUrgent ? (
+				<Container2>
+				<LoaderWrapper>
+					<PropagateLoader
+					color="#7ECDFF"
+					cssOverride={{
+						transform: "scale(1)",
+					}}
+					/>
+				</LoaderWrapper>
+				</Container2>
+			) : urgentAnimals.length > 0 ? (
+				<Swiper
+				modules={[Virtual, Navigation, SwiperPagination]}
+				slidesPerView={5}
+				spaceBetween={-45}
+				slidesOffsetBefore={50}
+				navigation={{
+					nextEl: ".swiper-button-next",
+					prevEl: ".swiper-button-prev",
+				}}
+				virtual
+				>
+				{urgentAnimals.map((animal, index) => (
+					<SwiperSlide key={animal.ABDM_IDNTFY_NO} virtualIndex={index}>
+					<Link to={`/animallist/detail/${animal.ABDM_IDNTFY_NO}`}>
+						<AnimalDataBox animal={animal} />
+					</Link>
+					</SwiperSlide>
+				))}
+				<div className="swiper-button-prev"></div>
+				<div className="swiper-button-next"></div>
+				</Swiper>
+			) : (
+				<NoUrgentAnimals>현재 긴급한 공고가 없습니다.</NoUrgentAnimals>
+			)}
 			</UrgentAnimalContainer>
 
 			<FilterContainer>
@@ -305,9 +344,8 @@ useEffect(() => {
 };
 
 export default AnimalList;
-//필터
 const FilterBoxWrapper = styled.div`
-	position: relative;
+    position: relative;
 `;
 const FilterContainer = styled.div`
 	display: flex;
@@ -383,26 +421,26 @@ const NoUrgentAnimals = styled.div`
 `;
 
 const Container2 = styled.div`
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  height: 550px;
-  width: 900px;
-  max-height: 1000px;
-  max-width: 1200px;
-  border-radius: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  /* background-color: white; // 배경색 추가 */
-  z-index: 1000; // 다른 요소들 위에 표시
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	height: 550px;
+	width: 900px;
+	max-height: 1000px;
+	max-width: 1200px;
+	border-radius: 20px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	/* background-color: white; // 배경색 추가 */
+	z-index: 1000; // 다른 요소들 위에 표시
 `;
 
 const LoaderWrapper = styled.div`
-  position: absolute;
-  top: 20%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+	position: absolute;
+	top: 20%;
+	left: 50%;
+	transform: translate(-50%, -50%);
 `;
