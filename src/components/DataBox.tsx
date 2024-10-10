@@ -1,19 +1,54 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import scrapNo from "../assets/images/scrap_no.svg";
 import scrapYes from "../assets/images/scrap_yes.svg";
 import styled from "styled-components";
-
 import { AnimalData } from '../services/api';
+interface DataBoxProps {
+    animal: AnimalData;
+    onScrapChange?: (animalId: string, isScraped: boolean) => void;
+}
 
-const DataBox: React.FC<{ animal: AnimalData }> = ({ animal }) => {
-    const getAge = (ageInfo: string) => {
+const DataBox: React.FC<DataBoxProps> = ({ animal, onScrapChange }) => {
+    const [isScraped, setIsScraped] = useState(false);
+
+    const getAge = (ageInfo: string): number => {
         const year = ageInfo.split('(')[0];
         const currentYear = new Date().getFullYear();
         return currentYear - parseInt(year);
     };
-
-    const getNeuterStatus = (neutYn: string) => {
+    
+    const getNeuterStatus = (neutYn: string): string => {
         return neutYn === 'N' ? '중성화 미완료' : '중성화 완료';
+    };
+    
+    useEffect(() => {
+        const scrapedAnimals = JSON.parse(localStorage.getItem('scrapedAnimals') || '[]');
+        setIsScraped(scrapedAnimals.includes(animal.ABDM_IDNTFY_NO));
+    }, [animal.ABDM_IDNTFY_NO]);
+
+    const toggleScrap = (event: React.MouseEvent) => {
+        event.stopPropagation();  // 이벤트 전파 중지
+        event.preventDefault();   // 기본 동작 방지
+
+        const newScrapState = !isScraped;
+        setIsScraped(newScrapState);
+        
+        const scrapedAnimals = JSON.parse(localStorage.getItem('scrapedAnimals') || '[]');
+        if (newScrapState) {
+            scrapedAnimals.push(animal.ABDM_IDNTFY_NO);
+            window.alert('스크랩 되었습니다.');
+        } else {
+            const index = scrapedAnimals.indexOf(animal.ABDM_IDNTFY_NO);
+            if (index > -1) {
+                scrapedAnimals.splice(index, 1);
+            }
+            window.alert('스크랩이 해제되었습니다.');
+        }
+        localStorage.setItem('scrapedAnimals', JSON.stringify(scrapedAnimals));
+
+        if (onScrapChange) {
+            onScrapChange(animal.ABDM_IDNTFY_NO, newScrapState);
+        }
     };
 
     return (
@@ -21,11 +56,11 @@ const DataBox: React.FC<{ animal: AnimalData }> = ({ animal }) => {
             <div className="group">
                 <div className="overlap">
                     <div className="overlap-group-wrapper">
-					<img 
-					src={animal.IMAGE_COURS} 
-					alt={animal.SPECIES_NM} 
-					className="animal-image"
-					/>
+                        <img 
+                            src={animal.IMAGE_COURS} 
+                            alt={animal.SPECIES_NM} 
+                            className="animal-image"
+                        />
                         <div className="overlap-button">
                             <div className="text-wrapper">{animal.STATE_NM}</div>
                         </div>
@@ -33,7 +68,12 @@ const DataBox: React.FC<{ animal: AnimalData }> = ({ animal }) => {
                 </div>
                 <div className="div">
                     <div className="overlap-2">
-                        <img className="scrapNo" alt="scrapNo" src={scrapNo} />
+                        <img 
+                            className="scrapIcon" 
+                            alt="scrap icon" 
+                            src={isScraped ? scrapYes : scrapNo} 
+                            onClick={toggleScrap}
+                        />
                         <div className="frame-wrapper">
                             <div className="frame">
                                 <div className="overlap-3">
@@ -140,6 +180,7 @@ const StyledBox = styled.div`
 		position: absolute;
 		top: 13px;
 		width: 171px;
+		padding-left: 90%;
 	}
 
 	.scrapNo {

@@ -80,7 +80,7 @@ const AnimalList: React.FC = () => {
 	useEffect(() => {
 	const loadPagedAnimals = async () => {
 		try {
-		const result = await fetchAnimalDataPaginated(currentPage, itemsPerPage);
+		const result = await fetchAnimalDataPaginated(currentPage, itemsPerPage, "");
 		setAnimalData(result.data);
 		setTotalCount(result.totalCount);
 		} catch (error) {
@@ -108,7 +108,7 @@ useEffect(() => {
 	useEffect(() => {
 		const loadPagedAnimals = async () => {
 		try {
-			const result = await fetchAnimalDataPaginated(currentPage, itemsPerPage);
+			const result = await fetchAnimalDataPaginated(currentPage, itemsPerPage, "");
 			setAnimalData(result.data);
 			setTotalCount(result.totalCount);
 		} catch (error) {
