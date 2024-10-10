@@ -17,15 +17,18 @@ const DetailPage: React.FC = () => {
 	useEffect(() => {
 		const fetchData = async () => {
 			if (id) {
-				console.log("Fetching data for animal ID:", id); // 주석: ID 로깅 추가
 				try {
 					const data = await fetchAnimalDataById(id);
-					console.log("Fetched animal data:", data); // 주석: 받아온 데이터 로깅
-					setAnimalData(data);
-					console.log("Latitude:", data?.REFINE_WGS84_LAT);
-					console.log("Longitude:", data?.REFINE_WGS84_LOGT);
+					if (data) {
+						setAnimalData(data);
+						console.log("Fetched animal data:", data);
+					} else {
+						console.error("No data found for animal ID:", id);
+						// 에러 상태 설정 또는 사용자에게 알림
+					}
 				} catch (error) {
 					console.error("Error fetching animal data:", error);
+					// 에러 상태 설정 또는 사용자에게 알림
 				}
 			}
 		};

@@ -6,7 +6,7 @@ import Paw from "../assets/images/Paw_blue.svg";
 import styled from "styled-components";
 import { Map, MapMarker } from "react-kakao-maps-sdk";
 import { Link } from "react-router-dom";
-import { fetchAnimalData, AnimalData } from "../services/api";
+import { fetchAnimalDataPaginated, AnimalData } from "../services/api";
 import AnimalDataBox from "../components/DataBox";
 import FliterDropDown from "../components/FliterDropDown";
 import ArrowDropDown from "../assets/images/arrow_drop_down.svg";
@@ -32,44 +32,37 @@ const filterOptions: FilterOptionsType = {
     품종: ["강아지", "고양이", "그외"],
 };
 
-
 const AnimalMap: React.FC<IProps> = ({ setShelterName }) => {
     const { data: shelterData, status } = useSelector((state: RootState) => state.shelter);
     const GYEONGGI_CENTER = { lat: 37.2750, lng: 127.0094 };
     const [selectedShelter, setSelectedShelter] = useState<string | null>(null);
     const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+
     const [currentPage, setCurrentPage] = useState(1);
     const [animalData, setAnimalData] = useState<AnimalData[]>([]);
-    const [filteredAnimalData, setFilteredAnimalData] = useState<AnimalData[]>([]);
     const [totalCount, setTotalCount] = useState(0);
     const itemsPerPage = 15;
 
     useEffect(() => {
-        const fetchAllAnimalData = async () => {
-            try {
-                const result = await fetchAnimalData();
-                setAnimalData(result.data);
-            } catch (error) {
-                console.error("Failed to fetch animal data:", error);
+        const fetchPagedAnimalData = async () => {
+            if (selectedShelter) {
+                try {
+                    const result = await fetchAnimalDataPaginated(currentPage, itemsPerPage, selectedShelter);
+                    setAnimalData(result.data);
+                    setTotalCount(result.totalCount);
+                } catch (error) {
+                    console.error("Failed to fetch animal data:", error);
+                }
             }
         };
-        fetchAllAnimalData();
-    }, []);
+        fetchPagedAnimalData();
+    }, [selectedShelter, currentPage]);
 
-    useEffect(() => {
-        if (selectedShelter) {
-            const filteredData = animalData.filter(animal => animal.SHTER_NM === selectedShelter);
-            setFilteredAnimalData(filteredData);
-            setTotalCount(filteredData.length);
-            setCurrentPage(1);  // Reset to first page when shelter changes
-        }
-    }, [selectedShelter, animalData]);
-
-    const getCurrentPageData = () => {
-        const startIndex = (currentPage - 1) * itemsPerPage;
-        const endIndex = startIndex + itemsPerPage;
-        return filteredAnimalData.slice(startIndex, endIndex);
-    };
+    // const getCurrentPageData = () => {
+    //     const startIndex = (currentPage - 1) * itemsPerPage;
+    //     const endIndex = startIndex + itemsPerPage;
+    //     return filteredAnimalData.slice(startIndex, endIndex);
+    // };
 
     if (status === 'loading') {
         return <LoadingContainer>데이터를 불러오는 중입니다...</LoadingContainer>;
@@ -154,29 +147,8 @@ const AnimalMap: React.FC<IProps> = ({ setShelterName }) => {
             {selectedShelter && (
                 <>
                     <Text2>{selectedShelter}에서 친구들이 기다리고 있어요</Text2>
-                    <FilterContainer>
-                        {Object.keys(filterOptions).map((filter) => (
-                            <FilterBoxWrapper
-                                key={filter}
-                                onMouseEnter={() => handleMouseEnter(filter)}
-                                onMouseLeave={handleMouseLeave}
-                            >
-                                <FilterBox>
-                                    {filter}
-                                    <img
-                                        src={ArrowDropDown}
-                                        alt="dropdown"
-                                        className="arrow-drop-down"
-                                    />
-                                </FilterBox>
-                                {activeDropdown === filter && (
-                                    <FliterDropDown options={filterOptions[filter]} />
-                                )}
-                            </FilterBoxWrapper>
-                        ))}
-                    </FilterContainer>
                     <AnimalListContainer>
-                        {getCurrentPageData().map((animal) => (
+                        {animalData.map((animal) => (
                             <Link
                                 to={`/animallist/detail/${animal.ABDM_IDNTFY_NO}`}
                                 key={animal.ABDM_IDNTFY_NO}
@@ -185,7 +157,7 @@ const AnimalMap: React.FC<IProps> = ({ setShelterName }) => {
                             </Link>
                         ))}
                     </AnimalListContainer>
-                    <Pagination>
+                    <Pagination2>
                         <Arrow onClick={handlePrevPage}>
                             <img
                                 src={currentPage === 1 ? Arrow_left : Arrow_left_blue}
@@ -207,13 +179,16 @@ const AnimalMap: React.FC<IProps> = ({ setShelterName }) => {
                                 alt="Next page"
                             />
                         </Arrow>
-                    </Pagination>
+                    </Pagination2>
                 </>
             )}
         </Container2>
     );
 };
 export default AnimalMap;
+const Pagination2 = styled(Pagination)`
+margin-top:5%;
+`;
 const FilterBoxWrapper = styled.div`
     position: relative;
 `;
