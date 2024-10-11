@@ -69,24 +69,6 @@ const MainPage: React.FC = () => {
 		return new Date(year, month, day);
 	};
 
-	const getFilteredUrgentAnimals = (animals: AnimalData[]): AnimalData[] => {
-		const today = new Date();
-		today.setHours(0, 0, 0, 0); // 시간을 00:00:00으로 설정
-		//fivedays 이지만.. 실제 수정은 3일 마감으로 설정
-		const fiveDaysLater = new Date(today.getTime() + 2 * 24 * 60 * 60 * 1000);
-		fiveDaysLater.setHours(23, 59, 59, 999); // 시간을 23:59:59.999로 설정
-
-		const filteredAnimals = animals.filter((animal) => {
-			const endDate = parseDate(animal.PBLANC_END_DE);
-			const isUrgent = endDate >= today && endDate <= fiveDaysLater;
-			console.log("Is urgent:", isUrgent);
-			return isUrgent;
-		});
-
-		console.log("Filtered urgent animals:", filteredAnimals.length);
-		return filteredAnimals;
-	};
-
 	const handleMatching = () => {
 		navigate("/matching");
 	};
@@ -136,16 +118,16 @@ const MainPage: React.FC = () => {
 					'#B39EB5',  // 파스텔 퍼플
 					'#FBCCE7',  // 더스티 로즈
 					'#E0FFFF'   // 라이트 시안
-				  ];
-				  
-				  setChartData({
-					labels,
-					datasets: [{
-					  data: dataValues,
-					  backgroundColor: backgroundColors,
-					  hoverBackgroundColor: backgroundColors
-					}]
-				  });
+					];
+					
+					setChartData({
+						labels,
+						datasets: [{
+						data: dataValues,
+						backgroundColor: backgroundColors,
+						hoverBackgroundColor: backgroundColors
+						}]
+					});
 			} catch (error) {
 				console.error("Failed to fetch city data:", error);
 			}
@@ -166,81 +148,87 @@ const MainPage: React.FC = () => {
 			},
 			},
 		};
+
 		const [statusChartData, setStatusChartData] = useState<{
 			labels: string[];
 			datasets: {
-			  data: number[];
-			  backgroundColor: string[];
-			  borderColor: string[];
-			  borderWidth: number;
-			}[];
-		  }>({
-			labels: [],
-			datasets: [{
-			  data: [],
-			  backgroundColor: [],
-			  borderColor: [],
-			  borderWidth: 1
-			}]
-		  });
-		
-		  useEffect(() => {
-			const fetchStatusData = async () => {
-			  try {
-				const { data } = await fetchAnimalData();
-				const statusCount: { [key: string]: number } = {
-				  "보호중": 0,
-				  "종료(입양)": 0,
-				  "종료(자연사)": 0,
-				  "종료(반환)": 0,
-				  "종료(방사)": 0,
-				  "기타": 0
+				data: number[];
+				backgroundColor: string[];
+				borderColor: string[];
+				borderWidth: number;
+				}[];
+			}>({
+				labels: [],
+				datasets: [{
+				data: [],
+				backgroundColor: [],
+				borderColor: [],
+				borderWidth: 1
+				}]
+			});
+			
+			useEffect(() => {
+				const fetchStatusData = async () => {
+				try {
+					const { data } = await fetchAnimalData();
+					const statusCount: { [key: string]: number } = {
+						"종료(자연사)": 0,
+						"보호중": 0,
+						"종료(안락사)": 0,
+						"종료(입양)": 0,
+						"종료(반환)": 0,
+						"기타": 0
+					};
+					
+					data.forEach((animal: AnimalData) => {
+					if (statusCount.hasOwnProperty(animal.STATE_NM)) {
+						statusCount[animal.STATE_NM]++;
+					} else {
+						statusCount["기타"]++;
+					}
+					});
+			
+					const labels = Object.keys(statusCount);
+					const dataValues = Object.values(statusCount);
+					const backgroundColors = [
+					'#a3dcff', '#c5ffc5', '#ffd8dd', '#FFDAB9', '#ffebff', '#AFEEEE', '#F0E68C'
+					];
+			
+					setStatusChartData({
+					labels,
+					datasets: [{
+						data: dataValues,
+						backgroundColor: backgroundColors,
+						borderColor: backgroundColors.map(color => color.replace('FF', 'CC')),
+						borderWidth: 1
+					}]
+					});
+				} catch (error) {
+					console.error("Failed to fetch status data:", error);
+				}
 				};
-				
-				data.forEach((animal: AnimalData) => {
-				  if (statusCount.hasOwnProperty(animal.STATE_NM)) {
-					statusCount[animal.STATE_NM]++;
-				  } else {
-					statusCount["기타"]++;
-				  }
-				});
-		
-				const labels = Object.keys(statusCount);
-				const dataValues = Object.values(statusCount);
-				const backgroundColors = [
-				  '#E6E6FA', '#c5ffc5', '#FFB6C1', '#FFDAB9', '#C8A2C8', '#AFEEEE'
-				];
-		
-				setStatusChartData({
-				  labels,
-				  datasets: [{
-					data: dataValues,
-					backgroundColor: backgroundColors,
-					borderColor: backgroundColors.map(color => color.replace('FF', 'CC')),
-					borderWidth: 1
-				  }]
-				});
-			  } catch (error) {
-				console.error("Failed to fetch status data:", error);
-			  }
+			
+				fetchStatusData();
+			}, []);
+			
+			const statusChartOptions = {
+				indexAxis: 'y' as const,
+				responsive: true,
+				plugins: {
+				legend: {
+					display: false,
+				},
+				title: {
+					display: true,
+					text: '유기동물 상태별 현황',
+				},
+				},
+				scales: {
+				x: {
+					beginAtZero: true,
+				}
+				}
 			};
-		
-			fetchStatusData();
-		  }, []);
-		
-		  const statusChartOptions = {
-			indexAxis: 'y' as const,
-			responsive: true,
-			plugins: {
-			  legend: {
-				display: false,
-			  },
-			  title: {
-				display: true,
-				text: '유기동물 상태별 현황',
-			  },
-			},
-		  };
 	
 
 	return (
@@ -315,7 +303,7 @@ const MainPage: React.FC = () => {
      	</ChartContainer>
 
 		 <ChartContainer>
-        <ChartTitle>유기동물 상태별 현황</ChartTitle>
+        <ChartTitle2>유기동물 상태별 현황</ChartTitle2>
         <Bar data={statusChartData} options={statusChartOptions} />
       </ChartContainer>
 	  </ChartWrapper>
@@ -339,11 +327,18 @@ const ChartContainer = styled.div`
 
 const ChartTitle = styled.h2`
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 1px;
+  margin-right: 10%;
   font-size: 30px;
   color: #333;
   font-family: "NanumSquareNeo", sans-serif;
-
+`;
+const ChartTitle2 = styled.h2`
+  text-align: center;
+  margin-bottom: 60px;
+  font-size: 30px;
+  color: #333;
+  font-family: "NanumSquareNeo", sans-serif;
 `;
 const Container2 = styled.div`
 	position: fixed;
