@@ -1,4 +1,3 @@
-// ProgressBar.tsx
 import React from "react";
 import styled from "styled-components";
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -26,20 +25,20 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ currentPage, totalPages }) =>
 const PROGRESS_KEY = ['matchingProgress'];
 
 export const useProgress = () => {
-  const queryClient = useQueryClient();
+    const queryClient = useQueryClient();
 
-  const { data: currentPage = 1 } = useQuery({
-      queryKey: PROGRESS_KEY,
-      queryFn: () => 1,
-      staleTime: Infinity,
-  });
+    const { data: currentPage = 1 } = useQuery({
+        queryKey: PROGRESS_KEY,
+        queryFn: () => 1,
+        staleTime: Infinity,
+    });
 
-  const setCurrentPage = (page: number) => {
-      queryClient.setQueryData(PROGRESS_KEY, page);
-  };
+    const setCurrentPage = (page: number) => {
+        queryClient.setQueryData(PROGRESS_KEY, page);
+    };
 
-  return { currentPage, setCurrentPage };
-};
+    return { currentPage, setCurrentPage };
+    };
 export default ProgressBar;
 
 const StyledElementProgressBar = styled.div`

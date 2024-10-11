@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled, { keyframes } from "styled-components";
-import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import {AnimalData,fetchUrgentAnimals } from "../services/api"; // API 함수와 타입 import
+import { AnimalData, fetchUrgentAnimals, fetchAnimalData } from "../services/api";
 import { Swiper, SwiperSlide } from "swiper/react";
 import GogAndCat from "../assets/images/MainPage_Dog_and_Cat.svg";
 import Paw from "../assets/images/pow.svg";
@@ -12,26 +11,28 @@ import { PropagateLoader } from "react-spinners";
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../components/store';
 import { loadShelterData } from '../components/shelterSlice';
-import {
-	Virtual,
-	Navigation,
-	Pagination as SwiperPagination,
-} from "swiper/modules";
+import { Virtual, Navigation, Pagination as SwiperPagination } from "swiper/modules";
 import { Text1 } from "../GlobalStyles";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement } from 'chart.js';
+import { Doughnut, Bar } from 'react-chartjs-2';
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
+
+ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement);
+
+
 //fade 효과
 const fadeIn = keyframes`
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+	from {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
 `;
 
 const MainPage: React.FC = () => {
@@ -89,6 +90,158 @@ const MainPage: React.FC = () => {
 	const handleMatching = () => {
 		navigate("/matching");
 	};
+
+	const [chartData, setChartData] = useState<{
+			labels: string[];
+			datasets: {
+			data: number[];
+			backgroundColor: string[];
+			hoverBackgroundColor: string[];
+			}[];
+		}>({
+			labels: [],
+			datasets: [{
+			data: [],
+			backgroundColor: [],
+			hoverBackgroundColor: []
+			}]
+		});
+		
+		useEffect(() => {
+			const fetchCityData = async () => {
+			try {
+				const { data } = await fetchAnimalData();
+				const cityCount: { [key: string]: number } = {};
+				
+				data.forEach((animal: AnimalData) => {
+				if (animal.SIGUN_NM) {
+					cityCount[animal.SIGUN_NM] = (cityCount[animal.SIGUN_NM] || 0) + 1;
+				}
+				});
+		
+				const sortedCities = Object.entries(cityCount)
+				.sort((a, b) => b[1] - a[1])
+				.slice(0, 10);
+		
+				const labels = sortedCities.map(([city]) => city);
+				const dataValues = sortedCities.map(([, count]) => count);
+				const backgroundColors = [
+					'#E6E6FA',  // 연한 라벤더
+					'#c5ffc5',  // 민트 그린
+					'#FFB6C1',  // 파스텔 핑크
+					'#FFDAB9',  // 피치
+					'#C8A2C8',  // 라일락
+					'#AFEEEE',  // 라이트 터쿼이즈
+					'#F0E68C',  // 버터스카치
+					'#B39EB5',  // 파스텔 퍼플
+					'#FBCCE7',  // 더스티 로즈
+					'#E0FFFF'   // 라이트 시안
+				  ];
+				  
+				  setChartData({
+					labels,
+					datasets: [{
+					  data: dataValues,
+					  backgroundColor: backgroundColors,
+					  hoverBackgroundColor: backgroundColors
+					}]
+				  });
+			} catch (error) {
+				console.error("Failed to fetch city data:", error);
+			}
+			};
+		
+			fetchCityData();
+		}, []);
+		
+		const chartOptions = {
+			responsive: true,
+			plugins: {
+			legend: {
+				position: 'right' as const,
+			},
+			title: {
+				display: true,
+				text: '지역별 유기동물 현황 (상위 10개 도시)',
+			},
+			},
+		};
+		const [statusChartData, setStatusChartData] = useState<{
+			labels: string[];
+			datasets: {
+			  data: number[];
+			  backgroundColor: string[];
+			  borderColor: string[];
+			  borderWidth: number;
+			}[];
+		  }>({
+			labels: [],
+			datasets: [{
+			  data: [],
+			  backgroundColor: [],
+			  borderColor: [],
+			  borderWidth: 1
+			}]
+		  });
+		
+		  useEffect(() => {
+			const fetchStatusData = async () => {
+			  try {
+				const { data } = await fetchAnimalData();
+				const statusCount: { [key: string]: number } = {
+				  "보호중": 0,
+				  "종료(입양)": 0,
+				  "종료(자연사)": 0,
+				  "종료(반환)": 0,
+				  "종료(방사)": 0,
+				  "기타": 0
+				};
+				
+				data.forEach((animal: AnimalData) => {
+				  if (statusCount.hasOwnProperty(animal.STATE_NM)) {
+					statusCount[animal.STATE_NM]++;
+				  } else {
+					statusCount["기타"]++;
+				  }
+				});
+		
+				const labels = Object.keys(statusCount);
+				const dataValues = Object.values(statusCount);
+				const backgroundColors = [
+				  '#E6E6FA', '#c5ffc5', '#FFB6C1', '#FFDAB9', '#C8A2C8', '#AFEEEE'
+				];
+		
+				setStatusChartData({
+				  labels,
+				  datasets: [{
+					data: dataValues,
+					backgroundColor: backgroundColors,
+					borderColor: backgroundColors.map(color => color.replace('FF', 'CC')),
+					borderWidth: 1
+				  }]
+				});
+			  } catch (error) {
+				console.error("Failed to fetch status data:", error);
+			  }
+			};
+		
+			fetchStatusData();
+		  }, []);
+		
+		  const statusChartOptions = {
+			indexAxis: 'y' as const,
+			responsive: true,
+			plugins: {
+			  legend: {
+				display: false,
+			  },
+			  title: {
+				display: true,
+				text: '유기동물 상태별 현황',
+			  },
+			},
+		  };
+	
 
 	return (
 		<PageContainer>
@@ -154,12 +307,44 @@ const MainPage: React.FC = () => {
 			)}
 			</UrgentAnimalContainer>
 		</SwiperContainer>
+
+		<ChartWrapper>
+		<ChartContainer>
+        <ChartTitle>지역별 유기동물 현황</ChartTitle>
+        <Doughnut data={chartData} options={chartOptions} />
+     	</ChartContainer>
+
+		 <ChartContainer>
+        <ChartTitle>유기동물 상태별 현황</ChartTitle>
+        <Bar data={statusChartData} options={statusChartOptions} />
+      </ChartContainer>
+	  </ChartWrapper>
+
 		</PageContainer>
 	);
 };
 
 export default MainPage;
+const ChartWrapper = styled.div`
+	display: flex;
+`;
+const ChartContainer = styled.div`
+  width: 100%;
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+  border-radius: 10px;
 
+`;
+
+const ChartTitle = styled.h2`
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 30px;
+  color: #333;
+  font-family: "NanumSquareNeo", sans-serif;
+
+`;
 const Container2 = styled.div`
 	position: fixed;
 	top: 50%;
@@ -174,7 +359,7 @@ const Container2 = styled.div`
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	/* background-color: white; // 배경색 추가 */
+	background-color: white; // 배경색 추가
 	z-index: 1000; // 다른 요소들 위에 표시
 `;
 
@@ -347,19 +532,3 @@ const NoUrgentAnimals = styled.div`
 	font-size: 18px;
 	color: #666;
 `;
-
-{
-	/* <div>
-            <h1>유기동물 보호 정보</h1>
-            {
-                animalData && (
-                    <ul>
-                        {animalData.map((animal)=> (
-                            <li key={animal.ABDM_IDNTFY_NO}>
-                                {animal.SPECIES_NM} - {animal.COLOR_NM} - {animal.AGE_INFO}
-                            </li>
-                        ))}
-                    </ul>
-                )}
-        </div> */
-}
