@@ -6,7 +6,7 @@ import { AnimalData, fetchUrgentAnimals, fetchAnimalData } from "../services/api
 import { Swiper, SwiperSlide } from "swiper/react";
 import GogAndCat from "../assets/images/MainPage_Dog_and_Cat.svg";
 import Paw from "../assets/images/pow.svg";
-import AnimalDataBox from "../components/DataBox"; // 새로운 컴포넌트 import
+import AnimalDataBox from "../components/DataBox"; 
 import { PropagateLoader } from "react-spinners";
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../components/store';
@@ -49,7 +49,7 @@ const MainPage: React.FC = () => {
 			const loadUrgentAnimals = async () => {
 			setIsLoadingUrgent(true);
 			try {
-				const animals = await fetchUrgentAnimals(1); // 3일 이내 마감되는 동물들
+				const animals = await fetchUrgentAnimals(1); // 1일 이내 마감되는 동물들
 				setUrgentAnimals(animals);
 			} catch (error) {
 				console.error("Failed to fetch urgent animal data:", error);

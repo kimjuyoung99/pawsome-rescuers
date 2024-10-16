@@ -70,12 +70,63 @@ const MatchingResult: React.FC = () => {
 				</Container>
 			);
 		}
+		// <ModalContainer>
+		// 	<ModalMini>
+		// 		<ModalText1>첫 번째 문제는</ModalText1>
+		// 		<ModalText2>품종에 대한 문제입니다</ModalText2>
+		// 	</ModalMini>
+		// 	<ModalMini>
+		// 		<ModalText1>두 번째 문제는</ModalText1>
+		// 		<ModalText2>성별에 대한 문제입니다</ModalText2>
+		// 	</ModalMini>
+		// 	<ModalMini>
+		// 		<ModalText1>세 번째 문제는</ModalText1>
+		// 		<ModalText2>몸무게에 대한 문제입니다</ModalText2>
+		// 	</ModalMini>
+		// 	<ModalMini>
+		// 		<ModalText1>네 번째 문제는</ModalText1>
+		// 		<ModalText2>색상에 대한 문제입니다</ModalText2>
+		// 	</ModalMini>
+		// </ModalContainer>	
 	};
 
 	return <>{renderChoiceContainer()}</>;
 };
 
 export default MatchingResult;
+
+const ModalContainer = styled.div`
+width: 714px;
+height: 686px;
+border-radius: 30px;
+background: #F8F9FA;
+box-shadow: 0px 4px 11.3px 0px rgba(0, 0, 0, 0.25);
+`;
+const ModalMini = styled.div`
+width: 648px;
+height: 113px;
+border-radius: 30px;
+border: var(--sds-size-stroke-border) solid var(--Border-Default-Default, #D9D9D9);
+background: var(--Schemes-On-Primary, #FFF);
+`;
+const ModalText1 = styled.text`
+color: #323232;
+font-family: Inter;
+font-size: 24px;
+font-style: normal;
+font-weight: 700;
+line-height: 40px; /* 166.667% */
+letter-spacing: -0.96px;
+`;
+const ModalText2 = styled.text`
+color: #323232;
+font-family: Inter;
+font-size: 24px;
+font-style: normal;
+font-weight: 400;
+line-height: 40px;
+letter-spacing: -0.96px;
+`;
 const A = styled.div``;
 const PawIcon = styled.svg`
 	width: 17px;
