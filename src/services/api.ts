@@ -97,7 +97,7 @@
     }
 
     export const fetchAnimalData = async (): Promise<{ data: AnimalData[], totalCount: number }> => {
-        console.log('API_KEY:', API_KEY);
+        // console.log('API_KEY:', API_KEY);
 
         let allData: AnimalData[] = [];
         let totalCount = 0;
