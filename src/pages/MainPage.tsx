@@ -61,14 +61,6 @@ const MainPage: React.FC = () => {
 			loadUrgentAnimals();
 		}, []);
 
-	//공고 데이터 파싱 함수
-	const parseDate = (dateString: string): Date => {
-		const year = parseInt(dateString.substring(0, 4));
-		const month = parseInt(dateString.substring(4, 6)) - 1; // 월은 0부터 시작
-		const day = parseInt(dateString.substring(6, 8));
-		return new Date(year, month, day);
-	};
-
 	const handleMatching = () => {
 		navigate("/matching");
 	};
@@ -354,7 +346,6 @@ const Container2 = styled.div`
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	background-color: white; // 배경색 추가
 	z-index: 1000; // 다른 요소들 위에 표시
 `;
 
