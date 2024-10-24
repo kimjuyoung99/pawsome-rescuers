@@ -179,26 +179,33 @@ const StyledBox = styled.div`
 		left: 0;
 		position: absolute;
 		top: 13px;
-		width: 171px;
+		width: 230px;
+		justify-content: flex-end;
 		padding-left: 90%;
 	}
-
-	.scrapNo {
-		height: 25px;
-        width: 16px;
-		left: 167px;
-		position: absolute;
+	.scrapIcon {
+		width: 20px;
+		height: 20px;
+		position: absolute; /* 절대 위치 설정 */
+		right: 40px; /* 오른쪽에서 10px 떨어짐 */
 		top: 0;
+		cursor: pointer; /* 클릭 가능함을 표시 */
 	}
-
 	.frame-wrapper {
 		height: 130px;
 		left: 0;
 		position: absolute;
 		top: 19px;
 		width: 171px;
-        /* padding-bottom: -20px; */
-        /* border : red solid 2px; */
+	}
+	
+	.scrapNo {
+		height: 25px;
+        width: 16px;
+		left: 167px;
+		position: absolute;
+		top: 0;
+		margin-left: 100px;
 	}
 
 	.frame {
